@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:37:33
+ * @LastEditTime: 2021-07-20 19:37:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -30,8 +30,8 @@ void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     Timer _timer;
     _timer.Start();
     for (int i = low; i <= up; i++) {
-        char* __key = (char*)new[kKeySize];
-        char* __value = (char*)new[kValueSize];
+        char* __key = (char*)new char[kKeySize];
+        char* __value = (char*)new char[kValueSize];
         *((uint64_t*)__key) = (i + 1);
         *((uint64_t*)__value) = (i + 1);
         bool _res = hikv->Put(thread_id, __key, kKeySize, __value, kValueSize);
@@ -57,7 +57,7 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     Timer _timer;
     _timer.Start();
     for (int i = low; i <= up; i++) {
-        char* __key = (char*)new[kKeySize];
+        char* __key = (char*)new char[kKeySize];
         char* __value = nullptr;
         size_t __value_length;
         *((uint64_t*)__key) = (i + 1);
