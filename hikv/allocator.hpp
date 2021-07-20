@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 13:52:28
- * @LastEditTime: 2021-07-20 15:27:41
+ * @LastEditTime: 2021-07-20 15:28:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/allocator.hpp
@@ -22,7 +22,7 @@ public:
         : usage_(0)
         , size_(options.pmem_file_size)
     {
-        bool is_pmem;
+        int is_pmem;
         size_t mapped_len;
         pmem_map_file(options.pmem_file_path, size_, PMEM_FILE_CREATE, 0666, &mapped_len, &is_pmem);
         printf("Allocator::Allocator[PATH:%s][SIZE:%.2fGB/%.2fGB][IS_PMEM:%d]\n",
