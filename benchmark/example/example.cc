@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 20:23:38
+ * @LastEditTime: 2021-07-20 20:26:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -54,6 +54,7 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     }
 #endif
 
+    uint64_t _found = 0;
     Timer _timer;
     _timer.Start();
     for (int i = low; i <= up; i++) {
@@ -62,12 +63,15 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
         size_t __value_length;
         *((uint64_t*)__key) = (i + 1);
         bool _res = hikv->Get(thread_id, __key, kKeySize, &__value, __value_length);
+        if (_res) {
+            _found++;
+        }
         delete __key;
         delete __value;
     }
     _timer.Stop();
     double _iops = 1.0 * (up - low + 1) / _timer.GetSeconds();
-    printf("[%d][IOPS:%.2f]\n", thread_id, _iops);
+    printf("[%d][IOPS:%.2f][FOUND:%llu/%llu]\n", thread_id, _iops, _found, up - low + 1);
 }
 
 int main(int argc, char** argv)
