@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:38
- * @LastEditTime: 2021-07-20 18:58:15
+ * @LastEditTime: 2021-07-20 19:20:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.cc
@@ -22,7 +22,7 @@ HashTable::HashTable(const Options& options, Allocator* allocator)
         table_[i] = (hash_bucket_t*)allocator->AlignAllocate(256, _index_size);
         memset(table_[i], 0, _index_size);
         printf("HashTable[%02d][SIZE:%.2fGB][ADDR:%llu][NUM_BUCKET:%llu]\n",
-            i, 1.0 * _index_size / (1024 * 1024 * 1024), (uint64_t)table_, num_bucket_);
+            i, 1.0 * _index_size / (1024 * 1024 * 1024), (uint64_t)table_[i], num_bucket_);
     }
 }
 
