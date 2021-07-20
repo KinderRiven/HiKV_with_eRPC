@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:34
- * @LastEditTime: 2021-07-20 16:08:41
+ * @LastEditTime: 2021-07-20 18:52:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.hpp
@@ -15,6 +15,9 @@ namespace hikv {
 
 #define NUM_HASH_SLOT (8)
 
+const int kKeySize = 16;
+const int kValueSize = 64;
+
 struct hash_bucket_t {
 public:
     uint64_t slot[NUM_HASH_SLOT]; // 8 * 8 = 64B
@@ -26,12 +29,16 @@ public:
 
     ~HashTable();
 
-    bool Put(int thread_id, const char* key, size_t key_length, const char* value, size_t value_length);
+    bool Put(const char* key, size_t key_length, uint64_t pos);
 
-    bool Get(int thread_id, const char* key, size_t key_length, char** value, size_t& value_length);
+    bool Get(const char* key, size_t key_length, char** value, size_t& value_length);
 
 private:
-    hash_bucket_t *table_;
+    hash_bucket_t* table_[64];
+
+    uint64_t num_bucket_;
+
+    uint32_t num_partition_;
 };
 
 };

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:15
- * @LastEditTime: 2021-07-20 16:07:13
+ * @LastEditTime: 2021-07-20 17:07:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.hpp
@@ -34,7 +34,7 @@ public:
 private:
     PStore* pstore_[64];
 
-    HashTable *table_[64];
+    HashTable* table_;
 
     Allocator* allocator_;
 
