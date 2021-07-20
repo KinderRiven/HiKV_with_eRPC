@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:23:07
+ * @LastEditTime: 2021-07-20 19:25:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -58,12 +58,16 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
 
 int main(int argc, char** argv)
 {
-    uint64_t _num_kv = 5000000;
+    uint64_t _num_kv = 50000000;
     Options _options;
+    _options.pmem_file_size = 100UL * (1024 * 1024 * 1024);
+    _options.index_size = 32UL * (1024 * 1024 * 1024);
+    _options.store_size = 64UL * (1024 * 1024 * 1024);
     _options.num_server_threads = 8;
-    HiKV* _hikv = new HiKV(_options);
-    std::vector<std::thread> _threads(8);
+    _num_kv /= _options.num_server_threads;
 
+    HiKV* _hikv = new HiKV(_options);
+    std::vector<std::thread> _threads(_options.num_server_threads);
     for (int i = 0; i < _options.num_server_threads; i++) {
         uint64_t __low, __up;
         __low = i * _num_kv + 1;
