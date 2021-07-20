@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:19:11
+ * @LastEditTime: 2021-07-20 19:23:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -14,8 +14,19 @@
 
 using namespace hikv;
 
+static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
+
 void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
 {
+#if 1
+    cpu_set_t _mask;
+    CPU_ZERO(&_mask);
+    CPU_SET(g_numa[thread_id], &_mask);
+    if (pthread_setaffinity_np(pthread_self(), sizeof(_mask), &_mask) < 0) {
+        printf("threadpool, set thread affinity failed.\n");
+    }
+#endif
+
     Timer _timer;
     _timer.Start();
     for (int i = low; i <= up; i++) {
@@ -49,6 +60,7 @@ int main(int argc, char** argv)
 {
     uint64_t _num_kv = 5000000;
     Options _options;
+    _options.num_server_threads = 8;
     HiKV* _hikv = new HiKV(_options);
     std::vector<std::thread> _threads(8);
 
