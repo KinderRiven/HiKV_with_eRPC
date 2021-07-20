@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:14:23
+ * @LastEditTime: 2021-07-20 19:19:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
  */
 
 #include "hikv.hpp"
+#include "timer.h"
 #include <thread>
 #include <vector>
 
@@ -15,6 +16,8 @@ using namespace hikv;
 
 void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
 {
+    Timer _timer;
+    _timer.Start();
     for (int i = low; i <= up; i++) {
         char* __key = (char*)malloc(kKeySize);
         char* __value = (char*)malloc(kValueSize);
@@ -24,6 +27,9 @@ void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
         delete __key;
         delete __value;
     }
+    _timer.Stop();
+    double _iops = 1.0 * (up - low + 1) / _timer.GetSeconds();
+    printf("[%d][IOPS:%.2f]\n", thread_id, _iops);
 }
 
 void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
