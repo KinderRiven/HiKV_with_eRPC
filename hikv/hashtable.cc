@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:38
- * @LastEditTime: 2021-07-20 18:52:59
+ * @LastEditTime: 2021-07-20 18:54:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.cc
@@ -46,14 +46,14 @@ bool HashTable::Put(const char* key, size_t key_length, uint64_t pos)
             if (__signature == _signature) {
                 uint64_t __addr = (_bucket->slot[i] & 0xffffffffffff);
                 if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
-                    __slot = ((_signature >> 48) | pos);
+                    __slot = (((uint64_t)_signature << 48) | pos);
                     _bucket->slot[i] = __slot;
                     _flag = true;
                     break;
                 }
             }
         } else {
-            uint64_t __slot = ((_signature >> 48) | pos);
+            uint64_t __slot = (((uint64_t)_signature << 48) | pos);
             bool __flag = __sync_bool_compare_and_swap(&_bucket->slot[i], 0, __slot);
             if (__flag) {
                 _flag = true;
