@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:37:52
+ * @LastEditTime: 2021-07-20 19:47:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -92,6 +92,7 @@ int main(int argc, char** argv)
     for (int i = 0; i < _options.num_server_threads; i++) {
         _threads[i].join();
     }
+    _hikv->Print();
 
     for (int i = 0; i < _options.num_server_threads; i++) {
         uint64_t __low, __up;

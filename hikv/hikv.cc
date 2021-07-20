@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:19
- * @LastEditTime: 2021-07-20 18:52:09
+ * @LastEditTime: 2021-07-20 19:46:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.cc
@@ -45,4 +45,5 @@ bool HiKV::Get(int thread_id, const char* key, size_t key_length, char** value, 
 
 void HiKV::Print()
 {
+    table_->Print();
 }
