@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:38
- * @LastEditTime: 2021-07-20 19:46:29
+ * @LastEditTime: 2021-07-20 20:10:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.cc
@@ -33,28 +33,55 @@ HashTable::~HashTable()
 bool HashTable::Put(const char* key, size_t key_length, uint64_t pos)
 {
     bool _flag = false;
-    uint64_t _hash64 = CityHash64(key, key_length);
-    uint64_t _bucket_id = _hash64 % num_bucket_;
-    uint32_t _partition_id = ((_bucket_id >> 56) & 0xff);
-    uint8_t _signature = ((_bucket_id >> 48) & 0xff);
-    hash_bucket_t* _bucket = table_[_partition_id] + _bucket_id;
+
+    uint64_t _hash64_1 = CityHash64WithSeed(key, key_length, 178535877);
+    uint64_t _bucket_id1 = _hash64_1 % num_bucket_;
+    uint32_t _partition_id1 = ((_bucket_id1 >> 56) & 0xff);
+    uint8_t _signature1 = ((_bucket_id1 >> 48) & 0xff);
+    hash_bucket_t* _bucket1 = table_[_partition_id1] + _bucket_id1;
+
+    uint64_t _hash64_2 = CityHash64WithSeed(key, key_length, 178535877);
+    uint64_t _bucket_id2 = _hash64_2 % num_bucket_;
+    uint32_t _partition_id2 = ((_bucket_id2 >> 56) & 0xff);
+    uint8_t _signature2 = ((_bucket_id2 >> 48) & 0xff);
+    hash_bucket_t* _bucket2 = table_[_partition_id2] + _bucket_id2;
 
     for (int i = 0; i < NUM_HASH_SLOT; i++) {
-        if (_bucket->slot[i]) {
-            uint64_t __slot = _bucket->slot[i];
+        if (_bucket1->slot[i]) {
+            uint64_t __slot = _bucket1->slot[i];
             uint8_t __signature = ((__slot >> 48) & 0xff);
-            if (__signature == _signature) {
-                uint64_t __addr = (_bucket->slot[i] & 0xffffffffffff);
+            if (__signature == _signature1) {
+                uint64_t __addr = (_bucket1->slot[i] & 0xffffffffffff);
                 if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
-                    __slot = (((uint64_t)_signature << 48) | pos);
-                    _bucket->slot[i] = __slot;
+                    __slot = (((uint64_t)_signature1 << 48) | pos);
+                    _bucket1->slot[i] = __slot;
                     _flag = true;
                     break;
                 }
             }
-        } else {
-            uint64_t __slot = (((uint64_t)_signature << 48) | pos);
-            bool __flag = __sync_bool_compare_and_swap(&_bucket->slot[i], 0, __slot);
+        } else if (!_bucket1->slot[i]) {
+            uint64_t __slot = (((uint64_t)_signature1 << 48) | pos);
+            bool __flag = __sync_bool_compare_and_swap(&_bucket1->slot[i], 0, __slot);
+            if (__flag) {
+                _flag = true;
+                break;
+            }
+        }
+        if (_bucket2->slot[i]) {
+            uint64_t __slot = _bucket2->slot[i];
+            uint8_t __signature = ((__slot >> 48) & 0xff);
+            if (__signature == _signature2) {
+                uint64_t __addr = (_bucket2->slot[i] & 0xffffffffffff);
+                if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
+                    __slot = (((uint64_t)_signature2 << 48) | pos);
+                    _bucket2->slot[i] = __slot;
+                    _flag = true;
+                    break;
+                }
+            }
+        } else if (!_bucket2->slot[i]) {
+            uint64_t __slot = (((uint64_t)_signature2 << 48) | pos);
+            bool __flag = __sync_bool_compare_and_swap(&_bucket2->slot[i], 0, __slot);
             if (__flag) {
                 _flag = true;
                 break;
@@ -67,18 +94,39 @@ bool HashTable::Put(const char* key, size_t key_length, uint64_t pos)
 bool HashTable::Get(const char* key, size_t key_length, char** value, size_t& value_length)
 {
     bool _flag = false;
-    uint64_t _hash64 = CityHash64(key, key_length);
-    uint64_t _bucket_id = _hash64 % num_bucket_;
-    uint32_t _partition_id = ((_bucket_id >> 56) & 0xff);
-    uint8_t _signature = ((_bucket_id >> 48) & 0xff);
-    hash_bucket_t* _bucket = table_[_partition_id] + _bucket_id;
+
+    uint64_t _hash64_1 = CityHash64WithSeed(key, key_length, 178535877);
+    uint64_t _bucket_id1 = _hash64_1 % num_bucket_;
+    uint32_t _partition_id1 = ((_bucket_id1 >> 56) & 0xff);
+    uint8_t _signature1 = ((_bucket_id1 >> 48) & 0xff);
+    hash_bucket_t* _bucket1 = table_[_partition_id1] + _bucket_id1;
+
+    uint64_t _hash64_2 = CityHash64WithSeed(key, key_length, 178535877);
+    uint64_t _bucket_id2 = _hash64_2 % num_bucket_;
+    uint32_t _partition_id2 = ((_bucket_id2 >> 56) & 0xff);
+    uint8_t _signature2 = ((_bucket_id2 >> 48) & 0xff);
+    hash_bucket_t* _bucket2 = table_[_partition_id2] + _bucket_id2;
 
     for (int i = 0; i < NUM_HASH_SLOT; i++) {
-        if (_bucket->slot[i]) {
-            uint64_t __slot = _bucket->slot[i];
+        if (_bucket1->slot[i]) {
+            uint64_t __slot = _bucket1->slot[i];
             uint8_t __signature = ((__slot >> 48) & 0xff);
-            if (__signature == _signature) {
-                uint64_t __addr = (_bucket->slot[i] & 0xffffffffffff);
+            if (__signature == _signature1) {
+                uint64_t __addr = (_bucket1->slot[i] & 0xffffffffffff);
+                if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
+                    *value = (char*)malloc(kValueSize);
+                    value_length = kValueSize;
+                    memcpy((void*)(*value), (void*)__addr, value_length);
+                    _flag = true;
+                    break;
+                }
+            }
+        }
+        if (_bucket2->slot[i]) {
+            uint64_t __slot = _bucket2->slot[i];
+            uint8_t __signature = ((__slot >> 48) & 0xff);
+            if (__signature == _signature2) {
+                uint64_t __addr = (_bucket2->slot[i] & 0xffffffffffff);
                 if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
                     *value = (char*)malloc(kValueSize);
                     value_length = kValueSize;
