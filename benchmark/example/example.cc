@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 20:26:52
+ * @LastEditTime: 2021-07-20 20:32:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -83,6 +83,7 @@ int main(int argc, char** argv)
     _options.store_size = 64UL * (1024 * 1024 * 1024);
     _options.num_server_threads = 8;
     _num_kv /= _options.num_server_threads;
+    strcpy(_options.pmem_file_path, "/home/pmem2/hikv");
 
     HiKV* _hikv = new HiKV(_options);
     std::vector<std::thread> _threads(_options.num_server_threads);
