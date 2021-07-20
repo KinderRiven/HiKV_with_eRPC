@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 13:52:28
- * @LastEditTime: 2021-07-20 14:14:52
+ * @LastEditTime: 2021-07-20 15:27:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/allocator.hpp
@@ -42,7 +42,7 @@ public:
             printf("No enough space!\n");
             exit(0);
         }
-        void* _ret = (uint64_t)(base_ + usage_);
+        void* _ret = (void*)(base_ + usage_);
         usage_ += size;
         lock_.unlock();
         return _ret;
