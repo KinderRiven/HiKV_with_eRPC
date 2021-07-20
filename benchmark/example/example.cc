@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:25:34
+ * @LastEditTime: 2021-07-20 19:34:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -45,6 +45,17 @@ void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
 
 void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
 {
+#if 1
+    cpu_set_t _mask;
+    CPU_ZERO(&_mask);
+    CPU_SET(g_numa[thread_id], &_mask);
+    if (pthread_setaffinity_np(pthread_self(), sizeof(_mask), &_mask) < 0) {
+        printf("threadpool, set thread affinity failed.\n");
+    }
+#endif
+
+    Timer _timer;
+    _timer.Start();
     for (int i = low; i <= up; i++) {
         char* __key = (char*)malloc(kKeySize);
         char* __value;
@@ -54,6 +65,9 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
         delete __key;
         delete __value;
     }
+    _timer.Stop();
+    double _iops = 1.0 * (up - low + 1) / _timer.GetSeconds();
+    printf("[%d][IOPS:%.2f]\n", thread_id, _iops);
 }
 
 int main(int argc, char** argv)
@@ -68,11 +82,22 @@ int main(int argc, char** argv)
 
     HiKV* _hikv = new HiKV(_options);
     std::vector<std::thread> _threads(_options.num_server_threads);
+
     for (int i = 0; i < _options.num_server_threads; i++) {
         uint64_t __low, __up;
         __low = i * _num_kv + 1;
         __up = (i + 1) * _num_kv + 1;
         _threads[i] = std::thread(run_put_work, i, _hikv, __low, __up);
+    }
+    for (int i = 0; i < _options.num_server_threads; i++) {
+        _threads[i].join();
+    }
+
+    for (int i = 0; i < _options.num_server_threads; i++) {
+        uint64_t __low, __up;
+        __low = i * _num_kv + 1;
+        __up = (i + 1) * _num_kv + 1;
+        _threads[i] = std::thread(run_get_work, i, _hikv, __low, __up);
     }
     for (int i = 0; i < _options.num_server_threads; i++) {
         _threads[i].join();
