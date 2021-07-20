@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 19:47:14
+ * @LastEditTime: 2021-07-20 20:23:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
     for (int i = 0; i < _options.num_server_threads; i++) {
         uint64_t __low, __up;
         __low = i * _num_kv + 1;
-        __up = (i + 1) * _num_kv + 1;
+        __up = (i + 1) * _num_kv;
         _threads[i] = std::thread(run_put_work, i, _hikv, __low, __up);
     }
     for (int i = 0; i < _options.num_server_threads; i++) {
