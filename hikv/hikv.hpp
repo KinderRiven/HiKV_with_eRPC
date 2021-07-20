@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:15
- * @LastEditTime: 2021-07-20 14:44:22
+ * @LastEditTime: 2021-07-20 16:07:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.hpp
@@ -11,6 +11,7 @@
 #define INCLUDE_HIKV_HPP_
 
 #include "allocator.hpp"
+#include "hashtable.hpp"
 #include "header.hpp"
 #include "options.hpp"
 #include "pstore.hpp"
@@ -33,7 +34,9 @@ public:
 private:
     PStore* pstore_[64];
 
-    Allocator* allcator_;
+    HashTable *table_[64];
+
+    Allocator* allocator_;
 
     int num_sever_thread_;
 

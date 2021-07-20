@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:19
- * @LastEditTime: 2021-07-20 14:56:59
+ * @LastEditTime: 2021-07-20 16:07:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.cc
@@ -16,11 +16,12 @@ HiKV::HiKV(const Options& options)
     , num_backend_thread_(options.num_backend_threads)
 {
     // NVM Allocator
-    allcator_ = new Allocator(options);
+    allocator_ = new Allocator(options);
     // KV Store
     for (int i = 0; i < num_sever_thread_; i++) {
-        void* __base = allcator_->Allocate(options.store_size / num_sever_thread_);
+        void* __base = allocator_->Allocate(options.store_size / num_sever_thread_);
         pstore_[i] = new PStore((uint64_t)__base, options.store_size / num_sever_thread_);
+        table_[i] = new HashTable(options, allocator_);
     }
 }
 
