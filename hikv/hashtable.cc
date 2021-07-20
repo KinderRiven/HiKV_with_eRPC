@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:38
- * @LastEditTime: 2021-07-20 19:20:15
+ * @LastEditTime: 2021-07-20 19:46:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.cc
@@ -90,4 +90,20 @@ bool HashTable::Get(const char* key, size_t key_length, char** value, size_t& va
         }
     }
     return _flag;
+}
+
+void HashTable::Print()
+{
+    uint64_t _num_kv = 0;
+    for (int i = 0; i < num_partition_; i++) {
+        for (int j = 0; j < num_bucket_; j++) {
+            hash_bucket_t* __bucket = table_[i] + j;
+            for (int k = 0; k < NUM_HASH_SLOT; k++) {
+                if (__bucket->slot[k]) {
+                    _num_kv++;
+                }
+            }
+        }
+    }
+    printf("HashTable[%llu/%llu]\n", _num_kv, 1UL * num_partition_ * num_bucket_ * NUM_HASH_SLOT);
 }

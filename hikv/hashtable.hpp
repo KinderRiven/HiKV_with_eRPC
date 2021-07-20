@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:34
- * @LastEditTime: 2021-07-20 18:52:15
+ * @LastEditTime: 2021-07-20 19:43:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.hpp
@@ -32,6 +32,8 @@ public:
     bool Put(const char* key, size_t key_length, uint64_t pos);
 
     bool Get(const char* key, size_t key_length, char** value, size_t& value_length);
+
+    void Print();
 
 private:
     hash_bucket_t* table_[64];
