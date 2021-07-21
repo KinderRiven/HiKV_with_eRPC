@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-21 11:03:50
- * @LastEditTime: 2021-07-21 16:29:47
+ * @LastEditTime: 2021-07-21 17:26:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/bptree.hpp
@@ -24,12 +24,12 @@ public:
     {
     }
 
-    mKey(char* str)
+    mKey(const char* str)
     {
         memcpy(buf_, str, strlen(str));
     }
 
-    mKey(char* str, size_t len)
+    mKey(const char* str, size_t len)
     {
         memcpy(buf_, str, len);
     }
