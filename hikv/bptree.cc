@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-21 12:56:39
- * @LastEditTime: 2021-07-21 16:29:54
+ * @LastEditTime: 2021-07-21 16:34:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/bptree.cc
@@ -28,4 +28,5 @@ bool Bptree::Put(mKey& key, mValue& value)
 
 void Bptree::Print()
 {
+    btree_->Print();
 }
