@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-21 18:49:58
+ * @LastEditTime: 2021-07-21 18:53:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -89,9 +89,10 @@ int main(int argc, char** argv)
     _options.pmem_file_size = 100UL * (1024 * 1024 * 1024);
     _options.index_size = 32UL * (1024 * 1024 * 1024);
     _options.store_size = 64UL * (1024 * 1024 * 1024);
-    _options.num_server_threads = 8;
+    _options.num_server_threads = 16;
+    _options.num_backend_threads = 4;
     _num_kv /= _options.num_server_threads;
-    strcpy(_options.pmem_file_path, "/home/pmem3/hikv");
+    strcpy(_options.pmem_file_path, "/home/pmem0/hikv");
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     double _sum_iops;
     HiKV* _hikv = new HiKV(_options);
