@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-21 18:53:13
+ * @LastEditTime: 2021-07-21 18:55:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -30,6 +30,7 @@ void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     }
 #endif
 
+    printf("[%d][LOW:%llu][UP:%llu][COUNT:%llu]\n", thread_id, low, up, up - low + 1);
     Timer _timer;
     _timer.Start();
     for (int i = low; i <= up; i++) {
@@ -58,6 +59,7 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     }
 #endif
 
+    printf("[%d][LOW:%llu][UP:%llu][COUNT:%llu]\n", thread_id, low, up, up - low + 1);
     uint64_t _found = 0;
     Timer _timer;
     _timer.Start();
