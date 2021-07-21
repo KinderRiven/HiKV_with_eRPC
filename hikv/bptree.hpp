@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-21 11:03:50
- * @LastEditTime: 2021-07-21 16:13:35
+ * @LastEditTime: 2021-07-21 16:29:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/bptree.hpp
@@ -119,7 +119,7 @@ typedef uint64_t mValue;
 
 class Bptree {
 public:
-    Bptree(Options& options);
+    Bptree(const Options& options);
 
     ~Bptree();
 
