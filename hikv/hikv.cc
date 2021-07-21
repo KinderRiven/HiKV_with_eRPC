@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:19
- * @LastEditTime: 2021-07-21 17:52:37
+ * @LastEditTime: 2021-07-21 18:42:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.cc
@@ -11,13 +11,13 @@
 
 using namespace hikv;
 
-// static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
+static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
 
-static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
+// static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
 
 static void async_btree_handle(thread_param_t* param)
 {
-    btree_task_t *_task;
+    btree_task_t* _task;
     Bptree* _bptree = param->bptree;
     tbb::concurrent_queue<btree_task_t*>* _queue = param->queue;
 
@@ -79,6 +79,8 @@ bool HiKV::Get(int thread_id, const char* key, size_t key_length, char** value, 
 
 void HiKV::Print()
 {
+    // hashtable
     table_->Print();
+    // b+tree
     bptree_->Print();
 }
