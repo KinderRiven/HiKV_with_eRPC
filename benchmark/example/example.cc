@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-21 18:49:27
+ * @LastEditTime: 2021-07-21 18:49:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -68,7 +68,7 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
         *((uint64_t*)__key) = (i + 1);
         bool _res = hikv->Get(thread_id, __key, kKeySize, &__value, __value_length);
         if (_res) {
-            if (*(uint64_t*)__key == *(uint64_t*)__value) {
+            if ((__value_length == kValueSize) && (*(uint64_t*)__key == *(uint64_t*)__value)) {
                 _found++;
             }
         }
