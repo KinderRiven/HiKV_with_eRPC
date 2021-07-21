@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-21 18:55:15
+ * @LastEditTime: 2021-07-21 19:23:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -14,8 +14,8 @@
 
 using namespace hikv;
 
-static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
-// static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
+// static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
+static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
 
 double g_iops[64] = { 0 };
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
     _options.num_server_threads = 16;
     _options.num_backend_threads = 4;
     _num_kv /= _options.num_server_threads;
-    strcpy(_options.pmem_file_path, "/home/pmem0/hikv");
+    strcpy(_options.pmem_file_path, "/home/pmem2/hikv");
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     double _sum_iops;
     HiKV* _hikv = new HiKV(_options);
