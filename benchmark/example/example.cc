@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 15:31:54
- * @LastEditTime: 2021-07-20 20:40:59
+ * @LastEditTime: 2021-07-21 16:37:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/example/example.cc
@@ -16,6 +16,8 @@ using namespace hikv;
 
 // static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
 static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
+
+double g_iops[64] = { 0 };
 
 void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
 {
@@ -41,6 +43,7 @@ void run_put_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     }
     _timer.Stop();
     double _iops = 1.0 * (up - low + 1) / _timer.GetSeconds();
+    g_iops[thread_id] = _iops;
     printf("[%d][IOPS:%.2f]\n", thread_id, _iops);
 }
 
@@ -72,6 +75,7 @@ void run_get_work(int thread_id, HiKV* hikv, uint64_t low, uint64_t up)
     }
     _timer.Stop();
     double _iops = 1.0 * (up - low + 1) / _timer.GetSeconds();
+    g_iops[thread_id] = _iops;
     printf("[%d][IOPS:%.2f][FOUND:%llu/%llu]\n", thread_id, _iops, _found, up - low + 1);
 }
 
@@ -86,6 +90,7 @@ int main(int argc, char** argv)
     _num_kv /= _options.num_server_threads;
     strcpy(_options.pmem_file_path, "/home/pmem3/hikv");
 
+    double _sum_iops;
     HiKV* _hikv = new HiKV(_options);
     std::vector<std::thread> _threads(_options.num_server_threads);
 
@@ -98,7 +103,11 @@ int main(int argc, char** argv)
     for (int i = 0; i < _options.num_server_threads; i++) {
         _threads[i].join();
     }
-    _hikv->Print();
+    _sum_iops = 0;
+    for (int i = 0; i < _options.num_server_threads; i++) {
+        _sum_iops += g_iops[i];
+    }
+    printf("[SUM][IOPS:%.2f]\n", _sum_iops);
 
     for (int i = 0; i < _options.num_server_threads; i++) {
         uint64_t __low, __up;
@@ -109,5 +118,11 @@ int main(int argc, char** argv)
     for (int i = 0; i < _options.num_server_threads; i++) {
         _threads[i].join();
     }
+    _sum_iops = 0;
+    for (int i = 0; i < _options.num_server_threads; i++) {
+        _sum_iops += g_iops[i];
+    }
+    printf("[SUM][IOPS:%.2f]\n", _sum_iops);
+    _hikv->Print();
     return 0;
 }
