@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:19
- * @LastEditTime: 2021-07-21 17:43:45
+ * @LastEditTime: 2021-07-21 17:52:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.cc
@@ -24,7 +24,7 @@ static void async_btree_handle(thread_param_t* param)
     while (true) {
         bool __found = _queue->try_pop(_task);
         if (__found) {
-            _bptree->Put(*(_task->key), *(_task->value));
+            _bptree->Put(*(_task->mkey), _task->mvalue);
         }
     }
 }
