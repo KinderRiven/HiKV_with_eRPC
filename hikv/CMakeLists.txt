@@ -13,6 +13,7 @@ set(SRC
     ${SRC_BASE}/city.cc
     ${SRC_BASE}/hashtable.cc
     ${SRC_BASE}/hikv.cc
+    ${SRC_BASE}/bptree.cc
 )
 
 set(LIBS

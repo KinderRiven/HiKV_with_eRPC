@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:15
- * @LastEditTime: 2021-07-20 17:07:52
+ * @LastEditTime: 2021-07-21 16:26:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.hpp
@@ -14,6 +14,7 @@
 #include "hashtable.hpp"
 #include "header.hpp"
 #include "options.hpp"
+#include "bptree.hpp"
 #include "pstore.hpp"
 
 namespace hikv {
@@ -35,6 +36,8 @@ private:
     PStore* pstore_[64];
 
     HashTable* table_;
+
+    Bptree *bptree_;
 
     Allocator* allocator_;
 

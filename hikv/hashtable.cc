@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:38
- * @LastEditTime: 2021-07-20 20:10:46
+ * @LastEditTime: 2021-07-21 10:22:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.cc
@@ -33,7 +33,6 @@ HashTable::~HashTable()
 bool HashTable::Put(const char* key, size_t key_length, uint64_t pos)
 {
     bool _flag = false;
-
     uint64_t _hash64_1 = CityHash64WithSeed(key, key_length, 178535877);
     uint64_t _bucket_id1 = _hash64_1 % num_bucket_;
     uint32_t _partition_id1 = ((_bucket_id1 >> 56) & 0xff);

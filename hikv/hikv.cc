@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:19
- * @LastEditTime: 2021-07-20 19:46:58
+ * @LastEditTime: 2021-07-21 16:26:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.cc
@@ -17,13 +17,18 @@ HiKV::HiKV(const Options& options)
 {
     // NVM Allocator
     allocator_ = new Allocator(options);
+
     // KV Store
     for (int i = 0; i < num_sever_thread_; i++) {
         void* __base = allocator_->Allocate(options.store_size / num_sever_thread_);
         pstore_[i] = new PStore((uint64_t)__base, options.store_size / num_sever_thread_);
     }
-    // INDEX
+
+    // hashtable
     table_ = new HashTable(options, allocator_);
+
+    // b+tree
+    bptree_ = new Bptree(options);
 }
 
 HiKV::~HiKV()
@@ -46,4 +51,5 @@ bool HiKV::Get(int thread_id, const char* key, size_t key_length, char** value, 
 void HiKV::Print()
 {
     table_->Print();
+    bptree_->Print();
 }
