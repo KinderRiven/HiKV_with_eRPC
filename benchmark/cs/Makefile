@@ -9,11 +9,11 @@ error:
 	@echo "Please choose one of the following targets: infiniband, raw, dpdk, clean"
 	@exit 2
 infiniband:
-	g++ -g -std=c++11 -o server server.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true 
-	g++ -g -std=c++11 -o client client.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true 
+	g++ -g -std=c++11 -o server server.cc -I ../../eRPC-master/src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true 
+	g++ -g -std=c++11 -o client client.cc -I ../../eRPC-master/src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true 
 raw:
-	g++ -g -std=c++11 -o server server.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
-	g++ -g -std=c++11 -o client client.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
+	g++ -g -std=c++11 -o server server.cc -I ../../eRPC-master/src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
+	g++ -g -std=c++11 -o client client.cc -I ../../eRPC-master/src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
 clean:
 	rm server client
 

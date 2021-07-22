@@ -1,0 +1,1 @@
+cmake . -DPERF=on -DROCE=on -DTRANSPORT=infiniband -DCONFIG_IS_AZURE=0
