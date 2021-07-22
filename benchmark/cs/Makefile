@@ -5,15 +5,10 @@
 #   * If DTRANSPORT=infiniband, use `make infiniband`
 LIBS = -lerpc -lpthread -lnuma -ldl
 
-error:
-	@echo "Please choose one of the following targets: infiniband, raw, dpdk, clean"
-	@exit 2
-infiniband:
+all:
 	g++ -g -std=c++11 -o server server.cc -I ../../third-party/eRPC-master/src -L ../../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true 
 	g++ -g -std=c++11 -o client client.cc -I ../../third-party/eRPC-master/src -L ../../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true 
-raw:
-	g++ -g -std=c++11 -o server server.cc -I ../../third-party/eRPC-master/src -L ../../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_RAW=true
-	g++ -g -std=c++11 -o client client.cc -I ../../third-party/eRPC-master/src -L ../../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_RAW=true
+
 clean:
 	rm server client
 

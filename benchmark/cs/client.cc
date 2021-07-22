@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-22 13:54:34
- * @LastEditors: your name
+ * @LastEditTime: 2021-07-22 19:57:43
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
  */
@@ -25,8 +25,10 @@ int main()
     std::string server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
     int session_num = rpc->create_session(server_uri, 0);
 
-    while (!rpc->is_connected(session_num))
+    while (!rpc->is_connected(session_num)) {
         rpc->run_event_loop_once();
+    }
+    printf("connect finished!\n");
 
     req = rpc->alloc_msg_buffer_or_die(kMsgSize);
     resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
