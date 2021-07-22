@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 12:56:19
- * @LastEditTime: 2021-07-21 19:24:10
+ * @LastEditTime: 2021-07-22 11:06:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hikv.cc
@@ -11,8 +11,8 @@
 
 using namespace hikv;
 
-// static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
-static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
+static int g_numa[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
+// static int g_numa[] = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 };
 
 static void async_btree_handle(thread_param_t* param)
 {
