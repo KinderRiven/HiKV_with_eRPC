@@ -9,27 +9,11 @@ error:
 	@echo "Please choose one of the following targets: infiniband, raw, dpdk, clean"
 	@exit 2
 infiniband:
-	g++ -g -std=c++11 -o server server.cc -I ../src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true
-	g++ -g -std=c++11 -o client client.cc -I ../src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true
+	g++ -g -std=c++11 -o server server.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true
+	g++ -g -std=c++11 -o client client.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_INFINIBAND=true
 raw:
-	g++ -g -std=c++11 -o server server.cc -I ../src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
-	g++ -g -std=c++11 -o client client.cc -I ../src -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
-dpdk:
-	g++ -g -std=c++11 -o server server.cc \
-		-Wno-deprecated-declarations \
-		-DERPC_DPDK=true -march=native \
-		-I ../src -I /usr/include/dpdk \
-		-L ../build $(LIBS) \
-		-Wl,--whole-archive -ldpdk -Wl,--no-whole-archive \
-		-lnuma -ldl -libverbs -lmlx4 -lmlx5
-
-	g++ -g -std=c++11 -o client client.cc \
-		-Wno-deprecated-declarations \
-		-DERPC_DPDK=true -march=native \
-		-I ../src -I /usr/include/dpdk \
-		-L ../build $(LIBS) \
-		-Wl,--whole-archive -ldpdk -Wl,--no-whole-archive \
-		-lnuma -ldl -libverbs -lmlx4 -lmlx5
+	g++ -g -std=c++11 -o server server.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
+	g++ -g -std=c++11 -o client client.cc -I ./include -L ../../third-party/erpc $(LIBS) -libverbs -DERPC_RAW=true
 clean:
 	rm server client
 
