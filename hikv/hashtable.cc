@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-20 14:28:38
- * @LastEditTime: 2021-07-21 10:22:28
+ * @LastEditTime: 2021-07-21 19:33:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/hikv/hashtable.cc
@@ -113,7 +113,7 @@ bool HashTable::Get(const char* key, size_t key_length, char** value, size_t& va
             if (__signature == _signature1) {
                 uint64_t __addr = (_bucket1->slot[i] & 0xffffffffffff);
                 if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
-                    *value = (char*)malloc(kValueSize);
+                    *value = (char*)(new char[kValueSize]);
                     value_length = kValueSize;
                     memcpy((void*)(*value), (void*)__addr, value_length);
                     _flag = true;
@@ -127,7 +127,7 @@ bool HashTable::Get(const char* key, size_t key_length, char** value, size_t& va
             if (__signature == _signature2) {
                 uint64_t __addr = (_bucket2->slot[i] & 0xffffffffffff);
                 if (memcmp((void*)key, (void*)__addr, kKeySize) == 0) {
-                    *value = (char*)malloc(kValueSize);
+                    *value = (char*)(new char[kValueSize]);
                     value_length = kValueSize;
                     memcpy((void*)(*value), (void*)__addr, value_length);
                     _flag = true;
