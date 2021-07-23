@@ -6,8 +6,8 @@
 LIBS = -lerpc -lpthread -lnuma -ldl
 
 all:
-	g++ -g -std=c++11 -o server server.cc -I ../../third-party/eRPC-master/src -L ../../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true -lpthread
-	g++ -g -std=c++11 -o client client.cc -I ../../third-party/eRPC-master/src -L ../../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true -lpthread
+	g++ -g -std=c++11 -o server server.cc -I ../third-party/eRPC-master/src -L ../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true -lpthread
+	g++ -g -std=c++11 -o client client.cc -I ../third-party/eRPC-master/src -L ../third-party/eRPC-master/build $(LIBS) -libverbs -DERPC_INFINIBAND=true -DROCE=true -lpthread
 
 clean:
 	rm server client
