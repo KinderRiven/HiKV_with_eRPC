@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 11:02:00
+ * @LastEditTime: 2021-07-23 11:06:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -29,6 +29,7 @@ int main()
     printf("create_session(%d)\n", session_num);
 
     while (!rpc->is_connected(session_num)) {
+        printf("run_event_loop_once\n");
         rpc->run_event_loop_once();
     }
     printf("connect finished!\n");
