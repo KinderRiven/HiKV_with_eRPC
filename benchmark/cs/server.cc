@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:28:38
+ * @LastEditTime: 2021-07-23 10:32:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -44,4 +44,5 @@ int main()
 
     printf("run event loop\n");
     rpc->run_event_loop(100000);
+    printf("finished\n");
 }
