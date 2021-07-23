@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 14:46:02
+ * @LastEditTime: 2021-07-23 14:51:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -56,7 +56,7 @@ int main()
 
     for (int i = 0; i < kNumServerThread; i++) {
         ServerContext* __context = new ServerContext();
-        erpc::Rpc<erpc::CTransport>* __rpc = new erpc::Rpc<erpc::CTransport>(_nexus, static_cast<void*>(__context), i, sm_handler);
+        erpc::Rpc<erpc::CTransport>* __rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, static_cast<void*>(__context), i, sm_handler);
         __context->thread_id = i;
         __context->rpc = __rpc;
         _thread[i] = std::thread(run_server_thread, __context);
