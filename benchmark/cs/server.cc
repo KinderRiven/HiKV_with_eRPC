@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:15:17
+ * @LastEditTime: 2021-07-23 10:16:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -22,6 +22,7 @@ void req_handler(erpc::ReqHandle* req_handle, void*)
 int main()
 {
     std::string server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
+    printf("%s\n" ,server_uri.c_str());
     erpc::Nexus nexus(server_uri, 0, 0);
     nexus.register_req_func(kReqType, req_handler);
     rpc = new erpc::Rpc<erpc::CTransport>(&nexus, nullptr, 0, nullptr);
