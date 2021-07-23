@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 14:45:39
+ * @LastEditTime: 2021-07-23 14:46:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -28,7 +28,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     _context->rpc->enqueue_response(req_handle, &resp);
 }
 
-void req_search_search(erpc::ReqHandle* req_handle, void* context)
+void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_search_search\n");
     ServerContext* _context = (ServerContext*)context;
