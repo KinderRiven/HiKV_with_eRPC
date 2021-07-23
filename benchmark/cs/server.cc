@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:50:11
+ * @LastEditTime: 2021-07-23 10:55:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -28,8 +28,18 @@ void req_handler(erpc::ReqHandle* req_handle, void*)
     printf("req_handler end\n");
 }
 
+static void run_thread(erpc::Nexus* nexus)
+{
+    printf("new rpc\n");
+    rpc = new erpc::Rpc<erpc::CTransport>(&nexus, static_cast<void*>(&req_context), 0, sm_handler);
+
+    printf("run event loop\n");
+    rpc->run_event_loop(10000000);
+}
+
 int main()
 {
+    std::thread* thread;
     std::string server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
     printf("%s\n", server_uri.c_str());
 
@@ -39,12 +49,6 @@ int main()
     printf("register_req_func\n");
     nexus.register_req_func(kReqType, req_handler);
 
-    printf("new rpc\n");
-    rpc = new erpc::Rpc<erpc::CTransport>(&nexus, static_cast<void*>(&req_context), 0, sm_handler);
-
-    printf("run event loop\n");
-    rpc->run_event_loop(10000000);
-    printf("finished\n");
-
-    while (1) { }
+    thread = std::thread(run_thread, &nexus);
+    thread->join();
 }
