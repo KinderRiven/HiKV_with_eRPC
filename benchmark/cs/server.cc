@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:55:43
+ * @LastEditTime: 2021-07-23 10:56:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -40,7 +40,7 @@ static void run_thread(erpc::Nexus* nexus)
 
 int main()
 {
-    std::thread* thread;
+    std::thread thread;
     std::string server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
     printf("%s\n", server_uri.c_str());
 
@@ -51,5 +51,5 @@ int main()
     nexus.register_req_func(kReqType, req_handler);
 
     thread = std::thread(run_thread, &nexus);
-    thread->join();
+    thread.join();
 }
