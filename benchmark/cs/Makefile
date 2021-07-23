@@ -11,4 +11,3 @@ all:
 
 clean:
 	rm server client
-

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-22 19:57:43
+ * @LastEditTime: 2021-07-23 11:02:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -23,7 +23,10 @@ int main()
     rpc = new erpc::Rpc<erpc::CTransport>(&nexus, nullptr, 0, sm_handler);
 
     std::string server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
+    printf("%s\n", server_uri.c_str());
+
     int session_num = rpc->create_session(server_uri, 0);
+    printf("create_session(%d)\n", session_num);
 
     while (!rpc->is_connected(session_num)) {
         rpc->run_event_loop_once();
