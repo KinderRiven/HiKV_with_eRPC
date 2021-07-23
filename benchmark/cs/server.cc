@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:32:23
+ * @LastEditTime: 2021-07-23 10:47:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -43,6 +43,6 @@ int main()
     rpc = new erpc::Rpc<erpc::CTransport>(&nexus, &req_context, 0, sm_handler);
 
     printf("run event loop\n");
-    rpc->run_event_loop(100000);
+    rpc->run_event_loop(10000000);
     printf("finished\n");
 }
