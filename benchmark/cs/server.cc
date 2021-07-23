@@ -1,13 +1,22 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:24:36
+ * @LastEditTime: 2021-07-23 10:28:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
  */
 #include "common.h"
+
+struct ReqContext {
+    uint32_t id;
+};
+
 erpc::Rpc<erpc::CTransport>* rpc;
+
+ReqContext req_context;
+
+void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 
 void req_handler(erpc::ReqHandle* req_handle, void*)
 {
@@ -31,7 +40,7 @@ int main()
     nexus.register_req_func(kReqType, req_handler);
 
     printf("new rpc\n");
-    rpc = new erpc::Rpc<erpc::CTransport>(&nexus, nullptr, 0, nullptr);
+    rpc = new erpc::Rpc<erpc::CTransport>(&nexus, &req_context, 0, sm_handler);
 
     printf("run event loop\n");
     rpc->run_event_loop(100000);
