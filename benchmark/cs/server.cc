@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 10:47:44
+ * @LastEditTime: 2021-07-23 10:50:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -40,9 +40,11 @@ int main()
     nexus.register_req_func(kReqType, req_handler);
 
     printf("new rpc\n");
-    rpc = new erpc::Rpc<erpc::CTransport>(&nexus, &req_context, 0, sm_handler);
+    rpc = new erpc::Rpc<erpc::CTransport>(&nexus, static_cast<void*>(&req_context), 0, sm_handler);
 
     printf("run event loop\n");
     rpc->run_event_loop(10000000);
     printf("finished\n");
+
+    while (1) { }
 }
