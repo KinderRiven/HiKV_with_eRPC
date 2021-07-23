@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 11:06:50
+ * @LastEditTime: 2021-07-23 13:44:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -11,7 +11,7 @@ erpc::Rpc<erpc::CTransport>* rpc;
 erpc::MsgBuffer req;
 erpc::MsgBuffer resp;
 
-void cont_func(void*, void*) { printf("%s\n", resp.buf); }
+void cont_func(void*, void*) { }
 
 void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 
@@ -19,6 +19,7 @@ int main()
 {
     std::string client_uri = kClientHostname + ":" + std::to_string(kUDPPort);
     erpc::Nexus nexus(client_uri, 0, 0);
+    printf("%s\n", client_uri.c_str());
 
     rpc = new erpc::Rpc<erpc::CTransport>(&nexus, nullptr, 0, sm_handler);
 
@@ -29,7 +30,6 @@ int main()
     printf("create_session(%d)\n", session_num);
 
     while (!rpc->is_connected(session_num)) {
-        printf("run_event_loop_once\n");
         rpc->run_event_loop_once();
     }
     printf("connect finished!\n");
