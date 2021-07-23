@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 13:43:08
+ * @LastEditTime: 2021-07-23 13:48:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -13,7 +13,7 @@ struct ReqContext {
     uint32_t id;
 };
 
-erpc::Rpc<erpc::CTransport>* rpc;
+erpc::Rpc<erpc::CTransport>* rpc = nullptr;
 
 ReqContext req_context;
 
@@ -33,6 +33,7 @@ static void run_thread(erpc::Nexus* nexus)
 {
     printf("new rpc\n");
     rpc = new erpc::Rpc<erpc::CTransport>(nexus, nullptr, 0, sm_handler);
+    assert(rpc != nullptr);
 
     printf("run event loop\n");
     rpc->run_event_loop(10000000);
