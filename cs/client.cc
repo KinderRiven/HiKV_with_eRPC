@@ -1,12 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 13:44:05
+ * @LastEditTime: 2021-07-23 13:56:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
  */
 #include "common.h"
+
 erpc::Rpc<erpc::CTransport>* rpc;
 erpc::MsgBuffer req;
 erpc::MsgBuffer resp;
