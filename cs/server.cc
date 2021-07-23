@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 14:44:16
+ * @LastEditTime: 2021-07-23 14:45:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -21,19 +21,21 @@ void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_insert_handle\n");
+    ServerContext* _context = (ServerContext*)context;
     auto& resp = req_handle->pre_resp_msgbuf;
-    rpc->resize_msg_buffer(&resp, kMsgSize);
+    context->rpc->resize_msg_buffer(&resp, kMsgSize);
     sprintf(reinterpret_cast<char*>(resp.buf), "hello");
-    rpc->enqueue_response(req_handle, &resp);
+    context->rpc->enqueue_response(req_handle, &resp);
 }
 
 void req_search_search(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_search_search\n");
+    ServerContext* _context = (ServerContext*)context;
     auto& resp = req_handle->pre_resp_msgbuf;
-    rpc->resize_msg_buffer(&resp, kMsgSize);
+    context->rpc->resize_msg_buffer(&resp, kMsgSize);
     sprintf(reinterpret_cast<char*>(resp.buf), "hello");
-    rpc->enqueue_response(req_handle, &resp);
+    context->rpc->enqueue_response(req_handle, &resp);
 }
 
 static void run_server_thread(ServerContext* context)
