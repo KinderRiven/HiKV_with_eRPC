@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 14:43:52
+ * @LastEditTime: 2021-07-23 14:44:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -38,9 +38,9 @@ void req_search_search(erpc::ReqHandle* req_handle, void* context)
 
 static void run_server_thread(ServerContext* context)
 {
-    erpc::Rpc<erpc::CTransport>* __rpc = context->rpc;
-    assert(rpc != nullptr);
-    rpc->run_event_loop(10000000);
+    erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
+    assert(_rpc != nullptr);
+    _rpc->run_event_loop(10000000);
 }
 
 int main()
