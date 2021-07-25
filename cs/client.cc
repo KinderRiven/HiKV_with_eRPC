@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 17:15:37
+ * @LastEditTime: 2021-07-25 17:28:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -14,6 +14,8 @@ erpc::MsgBuffer resp;
 
 void cont_func(void*, void*)
 {
+    printf("cont_func\n");
+    printf("cont_func\n");
     printf("cont_func\n");
 }
 
@@ -45,8 +47,6 @@ int main()
     *_src = 0x12345678;
 
     rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    while (true) {
-        rpc->run_event_loop_once();
-    }
+    rpc->run_event_loop(10000000);
     delete rpc;
 }
