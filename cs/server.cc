@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 14:51:44
+ * @LastEditTime: 2021-07-25 16:53:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -21,6 +21,10 @@ void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_insert_handle\n");
+
+    erpc::MsgBuffer* _req = req_handle->get_req_msgbuf();
+    printf("%llx\n", *(uint64_t*)_req->buf);
+
     ServerContext* _context = (ServerContext*)context;
     auto& resp = req_handle->pre_resp_msgbuf;
     _context->rpc->resize_msg_buffer(&resp, kMsgSize);
@@ -31,6 +35,10 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_search_search\n");
+
+    erpc::MsgBuffer* _req = req_handle->get_req_msgbuf();
+    printf("%llx\n", *(uint64_t*)_req->buf);
+
     ServerContext* _context = (ServerContext*)context;
     auto& resp = req_handle->pre_resp_msgbuf;
     _context->rpc->resize_msg_buffer(&resp, kMsgSize);

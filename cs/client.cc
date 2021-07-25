@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 13:56:20
+ * @LastEditTime: 2021-07-25 16:52:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -12,7 +12,10 @@ erpc::Rpc<erpc::CTransport>* rpc;
 erpc::MsgBuffer req;
 erpc::MsgBuffer resp;
 
-void cont_func(void*, void*) { }
+void cont_func(void*, void*)
+{
+    printf("cont_func\n");
+}
 
 void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 
@@ -28,15 +31,19 @@ int main()
     printf("%s\n", server_uri.c_str());
 
     int session_num = rpc->create_session(server_uri, 0);
-    printf("create_session(%d)\n", session_num);
+    printf("create_session-%d.\n", session_num);
 
     while (!rpc->is_connected(session_num)) {
         rpc->run_event_loop_once();
     }
-    printf("connect finished!\n");
+    printf("connect finished.\n");
 
     req = rpc->alloc_msg_buffer_or_die(kMsgSize);
     resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
+
+    // rpc->resize_msg_buffer(&req, kMsgSize);
+    char* _src = req.buf;
+    *(uint64_t*)_src = 0x12345678;
 
     rpc->enqueue_request(session_num, kReqType, &req, &resp, cont_func, nullptr);
     rpc->run_event_loop(100);
