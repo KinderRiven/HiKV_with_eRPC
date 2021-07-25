@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 17:47:33
+ * @LastEditTime: 2021-07-25 17:48:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -26,7 +26,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 
     ServerContext* _context = (ServerContext*)context;
     _context->rpc->resize_msg_buffer(&req_handle->dyn_resp_msgbuf, kMsgSize);
-    strcpy((void*)req_handle->dyn_resp_msgbuf.buf, "hello");
+    strcpy((char*)req_handle->dyn_resp_msgbuf.buf, "hello");
     _context->rpc->enqueue_response(req_handle, &req_handle->dyn_resp_msgbuf);
 }
 
