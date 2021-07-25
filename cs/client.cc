@@ -47,6 +47,6 @@ int main()
     *_src = 0x12345678;
 
     rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    rpc->run_event_loop(1000);
+    rpc->run_event_loop(1000000);
     delete rpc;
 }

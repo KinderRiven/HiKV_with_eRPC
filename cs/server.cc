@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 18:32:29
+ * @LastEditTime: 2021-07-25 18:35:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -50,7 +50,7 @@ static void run_server_thread(ServerContext* context)
 {
     erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
     assert(_rpc != nullptr);
-    _rpc->run_event_loop(1000);
+    _rpc->run_event_loop(1000000);
 }
 
 int main()
