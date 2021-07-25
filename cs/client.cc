@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 16:57:38
+ * @LastEditTime: 2021-07-25 17:15:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -24,7 +24,6 @@ int main()
     std::string client_uri = kClientHostname + ":" + std::to_string(kUDPPort);
     erpc::Nexus nexus(client_uri, 0, 0);
     printf("%s\n", client_uri.c_str());
-
     rpc = new erpc::Rpc<erpc::CTransport>(&nexus, nullptr, 0, sm_handler);
 
     std::string server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
@@ -46,6 +45,8 @@ int main()
     *_src = 0x12345678;
 
     rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    rpc->run_event_loop(100);
+    while (true) {
+        rpc->run_event_loop_once();
+    }
     delete rpc;
 }
