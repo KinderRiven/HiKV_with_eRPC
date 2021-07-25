@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 17:39:02
+ * @LastEditTime: 2021-07-25 18:32:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -47,6 +47,6 @@ int main()
     *_src = 0x12345678;
 
     rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    rpc->run_event_loop(10000000);
+    rpc->run_event_loop(1000);
     delete rpc;
 }
