@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 17:28:03
+ * @LastEditTime: 2021-07-25 17:39:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -12,7 +12,7 @@ erpc::Rpc<erpc::CTransport>* rpc;
 erpc::MsgBuffer req;
 erpc::MsgBuffer resp;
 
-void cont_func(void*, void*)
+void cont_func(void* context, void* tag)
 {
     printf("cont_func\n");
     printf("cont_func\n");

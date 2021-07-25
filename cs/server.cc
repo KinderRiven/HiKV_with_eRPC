@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 17:26:28
+ * @LastEditTime: 2021-07-25 17:47:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -25,18 +25,19 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     printf("%llx\n", *(uint64_t*)_req->buf);
 
     ServerContext* _context = (ServerContext*)context;
-    auto& resp = req_handle->pre_resp_msgbuf;
-    _context->rpc->resize_msg_buffer(&resp, kMsgSize);
-    sprintf(reinterpret_cast<char*>(resp.buf), "hello");
-    _context->rpc->enqueue_response(req_handle, &resp);
+    _context->rpc->resize_msg_buffer(&req_handle->dyn_resp_msgbuf, kMsgSize);
+    strcpy((void*)req_handle->dyn_resp_msgbuf.buf, "hello");
+    _context->rpc->enqueue_response(req_handle, &req_handle->dyn_resp_msgbuf);
 }
 
 void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
+    // Receive
     printf("req_search_search\n");
     auto _req = req_handle->get_req_msgbuf();
     printf("%llx\n", *(uint64_t*)_req->buf);
 
+    // Respnse
     ServerContext* _context = (ServerContext*)context;
     auto& resp = req_handle->pre_resp_msgbuf;
     _context->rpc->resize_msg_buffer(&resp, kMsgSize);
