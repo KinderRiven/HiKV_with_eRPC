@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 16:52:04
+ * @LastEditTime: 2021-07-25 16:56:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -42,8 +42,8 @@ int main()
     resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
 
     // rpc->resize_msg_buffer(&req, kMsgSize);
-    char* _src = req.buf;
-    *(uint64_t*)_src = 0x12345678;
+    uint64_t* _src = (uint64_t*)req.buf;
+    *_src = 0x12345678;
 
     rpc->enqueue_request(session_num, kReqType, &req, &resp, cont_func, nullptr);
     rpc->run_event_loop(100);
