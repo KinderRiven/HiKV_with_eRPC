@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-25 16:53:57
+ * @LastEditTime: 2021-07-25 16:55:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -22,7 +22,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_insert_handle\n");
 
-    erpc::MsgBuffer* _req = req_handle->get_req_msgbuf();
+    auto _req = req_handle->get_req_msgbuf();
     printf("%llx\n", *(uint64_t*)_req->buf);
 
     ServerContext* _context = (ServerContext*)context;
@@ -36,7 +36,7 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
     printf("req_search_search\n");
 
-    erpc::MsgBuffer* _req = req_handle->get_req_msgbuf();
+    auto _req = req_handle->get_req_msgbuf();
     printf("%llx\n", *(uint64_t*)_req->buf);
 
     ServerContext* _context = (ServerContext*)context;
