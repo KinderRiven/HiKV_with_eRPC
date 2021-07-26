@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 13:36:23
+ * @LastEditTime: 2021-07-26 13:37:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -31,20 +31,21 @@ static void run_client_thread(ClientContext* context)
 {
     int _thread_id = context->thread_id;
     erpc::Nexus* _nexus = context->nexus;
-    context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, nullptr, _thread_id, sm_handler);
 
-    int _session_num = rpc->create_session(context->server_uri, _thread_id % kNumServerThread);
+    context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, nullptr, _thread_id, sm_handler);
+    erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
+
+    int _session_num = _rpc->create_session(context->server_uri, _thread_id % kNumServerThread);
     printf("[%d][Session:%d]\n", _thread_id, _session_num);
 
-    while (!context->rpc->is_connected(_session_num)) {
-        context->rpc->run_event_loop_once();
+    while (!_rpc->is_connected(_session_num)) {
+        _rpc->run_event_loop_once();
     }
     printf("[%d][Connect Finished]\n", _thread_id);
 
     context->req = rpc->alloc_msg_buffer_or_die(kMsgSize);
     context->resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
-    // rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    context->rpc->run_event_loop(1000000);
+    _rpc->run_event_loop(1000000);
 }
 
 int main()
@@ -52,7 +53,7 @@ int main()
     std::string _client_uri = kClientHostname + ":" + std::to_string(kUDPPort);
     erpc::Nexus* _nexus = new erpc::Nexus(_client_uri, 0, 0);
     printf("ClientHostName:%s\n", _client_uri.c_str());
-    
+
     std::thread _thread[128];
     std::string _server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
     printf("ServerHostName:%s\n", _server_uri.c_str());
