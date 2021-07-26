@@ -1,13 +1,17 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-23 14:04:22
+ * @LastEditTime: 2021-07-26 11:00:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/cs/common.h
  */
 #include "rpc.h"
 #include <stdio.h>
+
+// --------------- KV packet ------------------------
+// | num_kv | key1 | value1 | key 2 | value 2 | ... |
+// --------------------------------------------------
 
 static const std::string kServerHostname = "10.0.0.42";
 static const std::string kClientHostname = "10.0.0.40";

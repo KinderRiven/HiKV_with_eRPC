@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 10:33:41
+ * @LastEditTime: 2021-07-26 11:03:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -41,13 +41,9 @@ int main()
     req = rpc->alloc_msg_buffer_or_die(kMsgSize);
     resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
 
-    uint64_t* _src = (uint64_t*)req.buf;
-    *_src = 0x12345678;
+    char* _src = (char*)req.buf;
+    *(uint32_t*)_src = 1;
     rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    while (true) {
-        uint64_t* __src = (uint64_t*)resp.buf;
-        printf("%llx\n", *(uint64_t*)__src);
-    }
     rpc->run_event_loop(1000000);
     delete rpc;
 }
