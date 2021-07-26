@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:03:36
+ * @LastEditTime: 2021-07-26 12:04:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -77,7 +77,7 @@ int main()
     _options.num_server_threads = kNumServerThread;
     _options.num_backend_threads = 1;
     strcpy(_options.pmem_file_path, "/home/pmem/hikv");
-    HiKV* _hikv = new HiKV(_options);
+    hikv::HiKV* _hikv = new hikv::HiKV(_options);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     std::thread _thread[128];
     std::string _server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
