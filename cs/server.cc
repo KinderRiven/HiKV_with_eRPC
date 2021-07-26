@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 19:33:17
+ * @LastEditTime: 2021-07-26 19:38:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -75,7 +75,9 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
     char* _hikv_value = nullptr;
     size_t _hikv_value_length;
     bool _res = _hikv->Get(_context->thread_id, _skey, kKeySize, &_hikv_value, _hikv_value_length);
-    memcpy(_resp_buf, _hikv_value, _hikv_value_length);
+    if (_hikv_value != nullptr) {
+        memcpy(_resp_buf, _hikv_value, _hikv_value_length);
+    }
     _context->rpc->enqueue_response(req_handle, &resp);
     delete _hikv_value;
 }
