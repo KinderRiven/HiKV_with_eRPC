@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:09:52
+ * @LastEditTime: 2021-07-26 12:10:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -61,7 +61,7 @@ static void run_server_thread(ServerContext* context)
 {
     int _thread_id = context->thread_id;
     erpc::Nexus* _nexus = context->nexus;
-    printf("CreateRPC - %d\n", thread_id);
+    printf("CreateRPC - %d\n", _thread_id);
     context->rpc = new erpc::Rpc<erpc::CTransport>(_nexus, (void*)context, _thread_id, sm_handler);
     assert(context->rpc != nullptr);
     context->rpc->run_event_loop(1000000);
