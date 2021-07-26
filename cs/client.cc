@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:38:44
+ * @LastEditTime: 2021-07-26 14:41:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -38,7 +38,7 @@ static void run_client_thread(ClientContext* context)
     int _thread_id = context->thread_id;
     erpc::Nexus* _nexus = context->nexus;
 
-    context->rpc = new erpc::Rpc<erpc::CTransport>(_nexus, nullptr, _thread_id, sm_handler);
+    context->rpc = new erpc::Rpc<erpc::CTransport>(_nexus, (void*)context, _thread_id, sm_handler);
     erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
     int _session_num = _rpc->create_session(context->server_uri, _thread_id % kNumServerThread);
     printf("[%d][Session:%d]\n", _thread_id, _session_num);
@@ -61,7 +61,7 @@ static void run_client_thread(ClientContext* context)
         *(uint64_t*)__dest = _base;
         printf("[%d][%llu]\n", _thread_id, _base);
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
-        while (!context->complete) { 
+        while (!context->complete) {
             _rpc->run_event_loop_once();
         }
         _base++;
