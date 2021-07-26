@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 11:14:53
+ * @LastEditTime: 2021-07-26 11:16:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -70,10 +70,10 @@ int main()
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     Options _options;
     _options.pmem_file_size = 100UL * (1024 * 1024 * 1024);
-    _options.index_size = 32UL * (1024 * 1024 * 1024);
-    _options.store_size = 64UL * (1024 * 1024 * 1024);
-    _options.num_server_threads = 16;
-    _options.num_backend_threads = 4;
+    _options.index_size = 1UL * (1024 * 1024 * 1024);
+    _options.store_size = 8UL * (1024 * 1024 * 1024);
+    _options.num_server_threads = 4;
+    _options.num_backend_threads = 1;
     strcpy(_options.pmem_file_path, "/home/pmem/hikv");
     HiKV* _hikv = new HiKV(_options);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
