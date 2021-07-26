@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 19:24:07
+ * @LastEditTime: 2021-07-26 19:36:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -69,9 +69,12 @@ void kv_cont_func(void* context, void* tag)
         uint64_t _key = *(uint64_t*)_buf;
         _buf += kKeySize;
         uint64_t _value = *(uint64_t*)_buf;
-        _context->result.num_search_ok++;
+        if (_key == _value) {
+            _context->result.num_search_ok++;
+        } else {
+            _context->result.num_search_error++;
+        }
         _context->request.complete = 1;
-        printf("%llu - %llu\n", _key, _value);
     }
 }
 
@@ -146,8 +149,8 @@ static void run_client_thread(ClientContext* context)
     }
     _end_time = erpc::rdtsc();
     _lat = erpc::to_usec(_end_time - _start_time, _rpc->get_freq_ghz());
-    printf("[search][%d][%llu][time:%.2fseconds][iops:%.2f]\n",
-        _thread_id, context->result.num_insert_ok,
+    printf("[search][%d][%llu/%llu][time:%.2fseconds][iops:%.2f]\n",
+        _thread_id, context->result.num_insert_ok, context->result.num_insert_error,
         _lat / 1000000.0, 1.0 * context->result.num_insert_ok / (_lat / 1000000.0));
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
