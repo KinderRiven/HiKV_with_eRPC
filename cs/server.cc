@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:04:35
+ * @LastEditTime: 2021-07-26 12:09:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -59,10 +59,10 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 
 static void run_server_thread(ServerContext* context)
 {
-    int thread_id = context->thread_id;
+    int _thread_id = context->thread_id;
     erpc::Nexus* _nexus = context->nexus;
     printf("CreateRPC - %d\n", thread_id);
-    context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, (void*)context, thread_id, sm_handler);
+    context->rpc = new erpc::Rpc<erpc::CTransport>(_nexus, (void*)context, _thread_id, sm_handler);
     assert(context->rpc != nullptr);
     context->rpc->run_event_loop(1000000);
 }
