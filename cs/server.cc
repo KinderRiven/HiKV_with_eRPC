@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 17:49:39
+ * @LastEditTime: 2021-07-26 17:53:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -29,8 +29,10 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     char* _buf = (char*)_req->buf;
     uint64_t _num_kv = *(uint64_t*)_buf;
     _buf += kHeadSize;
+
     uint64_t _key = *(uint64_t*)_buf;
     char* _skey = (char*)_buf;
+
     _buf += kKeySize;
     uint64_t _value = *(uint64_t*)_buf;
     char* _svalue = (char*)_buf;
@@ -76,7 +78,7 @@ static void run_server_thread(ServerContext* context)
 
 int main()
 {
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     hikv::Options _options;
     _options.pmem_file_size = 100UL * (1024 * 1024 * 1024);
     _options.index_size = 1UL * (1024 * 1024 * 1024);
@@ -85,14 +87,14 @@ int main()
     _options.num_backend_threads = 1;
     strcpy(_options.pmem_file_path, "/home/pmem/hikv");
     hikv::HiKV* _hikv = new hikv::HiKV(_options);
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     std::thread _thread[128];
     std::string _server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     erpc::Nexus* _nexus = new erpc::Nexus(_server_uri, 0, 0);
     _nexus->register_req_func(kInsertType, req_insert_handle);
     _nexus->register_req_func(kSearchType, req_search_handle);
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     for (int i = 0; i < kNumServerThread; i++) {
         ServerContext* __context = new ServerContext();
         __context->nexus = _nexus;
@@ -103,5 +105,5 @@ int main()
     for (int i = 0; i < kNumServerThread; i++) {
         _thread[i].join();
     }
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    return 0;
 }

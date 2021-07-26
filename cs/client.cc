@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:41:39
+ * @LastEditTime: 2021-07-26 17:57:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -22,13 +22,30 @@ public:
     int complete;
     uint64_t base;
     uint64_t num_kv;
+
+public:
+    int type;
+    uint64_t insert_ok;
+    uint64_t insert_error;
+    uint64_t search_ok;
+    uint64_t search_error;
+
+public:
+    ClientContext()
+        : insert_ok(0)
+        , insert_error(0)
+        , search_ok(0)
+        , search_error(0)
+        , rpc(nullptr)
+    {
+    }
 };
 
 void kv_cont_func(void* context, void* tag)
 {
     ClientContext* _context = (ClientContext*)context;
     _context->complete = 1;
-    printf("cont_func. [%d]\n", _context->complete);
+    _context->insert_ok++;
 }
 
 void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
@@ -59,13 +76,14 @@ static void run_client_thread(ClientContext* context)
         *(uint64_t*)__dest = _base;
         __dest += kKeySize;
         *(uint64_t*)__dest = _base;
-        printf("[%d][%llu]\n", _thread_id, _base);
+        // printf("[%d][%llu]\n", _thread_id, _base);
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
         while (!context->complete) {
             _rpc->run_event_loop_once();
         }
         _base++;
     }
+    printf("[%d][%llu]\n", _thread_id, context->insert_ok);
 }
 
 int main()
