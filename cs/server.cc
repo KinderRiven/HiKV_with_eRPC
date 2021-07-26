@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:03:25
+ * @LastEditTime: 2021-07-26 12:03:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -88,6 +88,7 @@ int main()
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     for (int i = 0; i < kNumServerThread; i++) {
         ServerContext* __context = new ServerContext();
+        __context->nexus = _nexus;
         __context->thread_id = i;
         __context->hikv = _hikv;
         _thread[i] = std::thread(run_server_thread, __context);
