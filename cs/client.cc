@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:21:44
+ * @LastEditTime: 2021-07-26 14:30:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -19,13 +19,16 @@ public:
     erpc::MsgBuffer resp;
 
 public:
+    int complete;
     uint64_t base;
     uint64_t num_kv;
 };
 
 void kv_cont_func(void* context, void* tag)
 {
-    printf("cont_func.\n");
+    ClientContext* _context = (ClientContext*)context;
+    _context->complete = 1;
+    printf("cont_func. [%d]\n", _context->complete);
 }
 
 void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
@@ -49,6 +52,7 @@ static void run_client_thread(ClientContext* context)
 
     uint64_t _base = context->base;
     for (uint64_t i = 1; i <= context->num_kv; i++) {
+        context->complete = 0;
         char* __dest = (char*)context->req.buf;
         *(uint64_t*)__dest = 1;
         __dest += kHeadSize;
@@ -57,6 +61,8 @@ static void run_client_thread(ClientContext* context)
         *(uint64_t*)__dest = _base;
         printf("[%d][%llu]\n", _thread_id, _base);
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
+        while (!context->complete) {
+        }
         _base++;
     }
     _rpc->run_event_loop(1000000);
