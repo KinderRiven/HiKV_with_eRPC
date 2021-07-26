@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 13:34:48
+ * @LastEditTime: 2021-07-26 13:35:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -36,15 +36,15 @@ static void run_client_thread(ClientContext* context)
     int _session_num = rpc->create_session(context->server_uri, _thread_id % kNumServerThread);
     printf("[%d][Session:%d]\n", _thread_id, _session_num);
 
-    while (!rpc->is_connected(session_num)) {
-        rpc->run_event_loop_once();
+    while (!context->rpc->is_connected(_session_num)) {
+        context->rpc->run_event_loop_once();
     }
     printf("[%d][Connect Finished]\n", _thread_id);
 
     context->req = rpc->alloc_msg_buffer_or_die(kMsgSize);
     context->resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
     // rpc->enqueue_request(session_num, kInsertType, &req, &resp, cont_func, nullptr);
-    rpc->run_event_loop(1000000);
+    context->rpc->run_event_loop(1000000);
 }
 
 int main()
