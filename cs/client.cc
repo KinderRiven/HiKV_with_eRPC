@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 13:23:14
+ * @LastEditTime: 2021-07-26 13:34:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -50,14 +50,14 @@ static void run_client_thread(ClientContext* context)
 int main()
 {
     std::string _client_uri = kClientHostname + ":" + std::to_string(kUDPPort);
-    printf("ClientHostName:%s\n", client_uri.c_str());
+    printf("ClientHostName:%s\n", _client_uri.c_str());
 
     erpc::Nexus* _nexus = new erpc::Nexus(client_uri, 0, 0);
     rpc = new erpc::Rpc<erpc::CTransport>(&nexus, nullptr, 0, sm_handler);
 
     std::thread _thread[128];
     std::string _server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
-    printf("ServerHostName:%s\n", server_uri.c_str());
+    printf("ServerHostName:%s\n", _server_uri.c_str());
 
     for (int i = 0; i < kNumClientThread; i++) {
         ClientContext* __context = new ClientContext();
