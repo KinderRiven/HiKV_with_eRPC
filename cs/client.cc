@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:20:50
+ * @LastEditTime: 2021-07-26 14:21:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -55,6 +55,7 @@ static void run_client_thread(ClientContext* context)
         *(uint64_t*)__dest = _base;
         __dest += kKeySize;
         *(uint64_t*)__dest = _base;
+        printf("[%d][%llu]\n", _thread_id, _base);
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
         _base++;
     }
