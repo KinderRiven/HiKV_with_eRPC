@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 11:16:20
+ * @LastEditTime: 2021-07-26 12:01:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -11,12 +11,11 @@
 #include "hikv.hpp"
 #include <thread>
 
-using namespace hikv;
-
 struct ServerContext {
 public:
     int thread_id;
-    HiKV* hikv;
+    erpc::Nexus* nexus;
+    hikv::HiKV* hikv;
     erpc::Rpc<erpc::CTransport>* rpc = nullptr;
 };
 
@@ -60,19 +59,22 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 
 static void run_server_thread(ServerContext* context)
 {
-    erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
-    assert(_rpc != nullptr);
-    _rpc->run_event_loop(1000000);
+    int thread_id = context->thread_id;
+    erpc::Nexus* _nexus = context->nexus;
+    printf("CreateRPC - %d\n", thread_id);
+    __context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, (void*)context, thread_id, sm_handler);
+    assert(__context->rpc != nullptr);
+    __context->rpc->run_event_loop(1000000);
 }
 
 int main()
 {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    Options _options;
+    hikv::Options _options;
     _options.pmem_file_size = 100UL * (1024 * 1024 * 1024);
     _options.index_size = 1UL * (1024 * 1024 * 1024);
     _options.store_size = 8UL * (1024 * 1024 * 1024);
-    _options.num_server_threads = 4;
+    _options.num_server_threads = kNumServerThread;
     _options.num_backend_threads = 1;
     strcpy(_options.pmem_file_path, "/home/pmem/hikv");
     HiKV* _hikv = new HiKV(_options);
@@ -86,7 +88,6 @@ int main()
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     for (int i = 0; i < kNumServerThread; i++) {
         ServerContext* __context = new ServerContext();
-        erpc::Rpc<erpc::CTransport>* __rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, static_cast<void*>(__context), i, sm_handler);
         __context->thread_id = i;
         __context->rpc = __rpc;
         __context->hikv = _hikv;

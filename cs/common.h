@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 11:00:53
+ * @LastEditTime: 2021-07-26 11:34:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/cs/common.h
@@ -22,5 +22,6 @@ static constexpr uint8_t kInsertType = 1;
 static constexpr uint8_t kSearchType = 2;
 
 static const uint32_t kNumServerThread = 8;
+static const uint32_t kNumClientThread = 8;
 
 static constexpr size_t kMsgSize = 16;
