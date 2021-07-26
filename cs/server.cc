@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:01:27
+ * @LastEditTime: 2021-07-26 12:03:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -62,9 +62,9 @@ static void run_server_thread(ServerContext* context)
     int thread_id = context->thread_id;
     erpc::Nexus* _nexus = context->nexus;
     printf("CreateRPC - %d\n", thread_id);
-    __context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, (void*)context, thread_id, sm_handler);
-    assert(__context->rpc != nullptr);
-    __context->rpc->run_event_loop(1000000);
+    context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, (void*)context, thread_id, sm_handler);
+    assert(context->rpc != nullptr);
+    context->rpc->run_event_loop(1000000);
 }
 
 int main()
@@ -89,7 +89,6 @@ int main()
     for (int i = 0; i < kNumServerThread; i++) {
         ServerContext* __context = new ServerContext();
         __context->thread_id = i;
-        __context->rpc = __rpc;
         __context->hikv = _hikv;
         _thread[i] = std::thread(run_server_thread, __context);
     }
