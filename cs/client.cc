@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 19:21:38
+ * @LastEditTime: 2021-07-26 19:24:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -59,11 +59,11 @@ void kv_cont_func(void* context, void* tag)
 {
     ClientContext* _context = (ClientContext*)context;
     _context->request.end_time = erpc::rdtsc();
-    if (_context->type == REQ_INSERT) {
+    if (_context->request.type == REQ_INSERT) {
         _context->result.num_insert_ok++;
         _context->request.complete = 1;
-    } else if (_context->type == REQ_SEARCH) {
-        char* _buf = (char *)_context->request.resp.buf;
+    } else if (_context->request.type == REQ_SEARCH) {
+        char* _buf = (char*)_context->request.resp.buf;
         uint64_t _num_kv = *(uint64_t*)_buf;
         _buf += kHeadSize;
         uint64_t _key = *(uint64_t*)_buf;

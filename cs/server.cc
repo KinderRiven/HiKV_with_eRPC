@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 17:59:25
+ * @LastEditTime: 2021-07-26 19:31:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -53,15 +53,31 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 
 void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
-    // Receive
-    auto _req = req_handle->get_req_msgbuf();
-
-    // Respnse
     ServerContext* _context = (ServerContext*)context;
+    hikv::HiKV* _hikv = _context->hikv;
+    // ++++++++++++++++++++++++++++++++++++++
+    auto _req = req_handle->get_req_msgbuf();
+    char* _buf = (char*)_req->buf;
+    uint64_t _num_kv = *(uint64_t*)_buf;
+    _buf += kHeadSize;
+    uint64_t _key = *(uint64_t*)_buf;
+    char* _skey = (char*)_buf;
+    // ++++++++++++++++++++++++++++++++++++++
     auto& resp = req_handle->pre_resp_msgbuf;
-    _context->rpc->resize_msg_buffer(&resp, kMsgSize);
-    sprintf(reinterpret_cast<char*>(resp.buf), "hello");
+    _context->rpc->resize_msg_buffer(&resp, kHeadSize + kKeySize + kValueSize);
+    // ++++++++++++++++++++++++++++++++++++++
+    char* _resp_buf = (char*)resp.buf;
+    *(uint64_t*)_resp_buf = 1;
+    _resp_buf += kHeadSize;
+    *(uint64_t*)_resp_buf = _key;
+    _resp_buf += kKeySize;
+
+    char* _hikv_value = nullptr;
+    size_t _hikv_value_length;
+    bool _res = _hikv->Search(_context->thread_id, _skey, kKeySize, &_hikv_value, _hikv_value_length);
+    memcpy(_resp_buf, _hikv_value, _hikv_value_length);
     _context->rpc->enqueue_response(req_handle, &resp);
+    delete _hikv_value;
 }
 
 static void run_server_thread(ServerContext* context)
