@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:15:39
+ * @LastEditTime: 2021-07-26 14:16:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -48,7 +48,7 @@ static void run_client_thread(ClientContext* context)
     context->resp = _rpc->alloc_msg_buffer_or_die(kMsgSize);
 
     for (uint64_t i = 1; i <= context->num_kv; i++) {
-        char* __dest = context->req.buf;
+        char* __dest = (char*)context->req.buf;
         *(uint64_t*)__dest = 1;
         __dest += 8;
         *(uint64_t*)__dest = i;
