@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:17:58
+ * @LastEditTime: 2021-07-26 14:20:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -47,14 +47,16 @@ static void run_client_thread(ClientContext* context)
     context->req = _rpc->alloc_msg_buffer_or_die(kMsgSize);
     context->resp = _rpc->alloc_msg_buffer_or_die(kMsgSize);
 
+    uint64_t _base = context->base;
     for (uint64_t i = 1; i <= context->num_kv; i++) {
         char* __dest = (char*)context->req.buf;
         *(uint64_t*)__dest = 1;
         __dest += kHeadSize;
-        *(uint64_t*)__dest = i;
+        *(uint64_t*)__dest = _base;
         __dest += kKeySize;
-        *(uint64_t*)__dest = i;
+        *(uint64_t*)__dest = _base;
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
+        _base++;
     }
     _rpc->run_event_loop(1000000);
 }
