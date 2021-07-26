@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 13:37:44
+ * @LastEditTime: 2021-07-26 13:39:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -34,7 +34,6 @@ static void run_client_thread(ClientContext* context)
 
     context->rpc = new erpc::Rpc<erpc::CTransport>(&_nexus, nullptr, _thread_id, sm_handler);
     erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
-
     int _session_num = _rpc->create_session(context->server_uri, _thread_id % kNumServerThread);
     printf("[%d][Session:%d]\n", _thread_id, _session_num);
 
@@ -43,8 +42,8 @@ static void run_client_thread(ClientContext* context)
     }
     printf("[%d][Connect Finished]\n", _thread_id);
 
-    context->req = rpc->alloc_msg_buffer_or_die(kMsgSize);
-    context->resp = rpc->alloc_msg_buffer_or_die(kMsgSize);
+    context->req = _rpc->alloc_msg_buffer_or_die(kMsgSize);
+    context->resp = _rpc->alloc_msg_buffer_or_die(kMsgSize);
     _rpc->run_event_loop(1000000);
 }
 
