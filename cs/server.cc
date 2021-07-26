@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:04:05
+ * @LastEditTime: 2021-07-26 12:04:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -82,9 +82,9 @@ int main()
     std::thread _thread[128];
     std::string _server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    erpc::Nexus _nexus(_server_uri, 0, 0);
-    _nexus.register_req_func(kInsertType, req_insert_handle);
-    _nexus.register_req_func(kSearchType, req_search_handle);
+    erpc::Nexus *_nexus = new erpc::Nexus(_server_uri, 0, 0);
+    _nexus->register_req_func(kInsertType, req_insert_handle);
+    _nexus->register_req_func(kSearchType, req_search_handle);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     for (int i = 0; i < kNumServerThread; i++) {
         ServerContext* __context = new ServerContext();
