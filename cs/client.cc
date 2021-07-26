@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:30:11
+ * @LastEditTime: 2021-07-26 14:38:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -61,11 +61,11 @@ static void run_client_thread(ClientContext* context)
         *(uint64_t*)__dest = _base;
         printf("[%d][%llu]\n", _thread_id, _base);
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
-        while (!context->complete) {
+        while (!context->complete) { 
+            _rpc->run_event_loop_once();
         }
         _base++;
     }
-    _rpc->run_event_loop(1000000);
 }
 
 int main()
