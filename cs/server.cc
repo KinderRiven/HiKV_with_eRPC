@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:17:38
+ * @LastEditTime: 2021-07-26 17:49:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -26,23 +26,27 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     ServerContext* _context = (ServerContext*)context;
     auto _req = req_handle->get_req_msgbuf();
 
-    // req_handle->dyn_resp_msgbuf = _context->rpc->alloc_msg_buffer_or_die(kMsgSize);
-    // _context->rpc->resize_msg_buffer(&req_handle->dyn_resp_msgbuf, kMsgSize);
-    // strcpy((char*)req_handle->dyn_resp_msgbuf.buf, "hello");
-    // _context->rpc->enqueue_response(req_handle, &req_handle->dyn_resp_msgbuf);
-
     char* _buf = (char*)_req->buf;
     uint64_t _num_kv = *(uint64_t*)_buf;
     _buf += kHeadSize;
     uint64_t _key = *(uint64_t*)_buf;
+    char* _skey = (char*)_buf;
     _buf += kKeySize;
     uint64_t _value = *(uint64_t*)_buf;
-    printf("[insert][%d][%d][%llu-%llu]\n", _context->thread_id, _num_kv, _key, _value);
+    char* _svalue = (char*)_buf;
+    printf("[insert][%d][%d][%llu-%llu]\n", _context->thread_id, _num_kv, _key, _value, _req);
+
+    hikv::HiKV* _hikv = _context->hikv;
+    bool _res = _hikv->Put(_context->thread_id, _skey, kKeySize, _svalue, kValueSize);
 
     // Respnse
     auto& resp = req_handle->pre_resp_msgbuf;
-    _context->rpc->resize_msg_buffer(&resp, kMsgSize);
-    sprintf(reinterpret_cast<char*>(resp.buf), "hello");
+    _context->rpc->resize_msg_buffer(&resp, 8);
+    if (_res) {
+        *(uint64_t*)resp.buf = 1;
+    } else {
+        *(uint64_t*)resp.buf = 2;
+    }
     _context->rpc->enqueue_response(req_handle, &resp);
 }
 
