@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 17:53:56
+ * @LastEditTime: 2021-07-26 17:57:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -36,7 +36,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     _buf += kKeySize;
     uint64_t _value = *(uint64_t*)_buf;
     char* _svalue = (char*)_buf;
-    printf("[insert][%d][%d][%llu-%llu]\n", _context->thread_id, _num_kv, _key, _value, _req);
+    // printf("[insert][%d][%d][%llu-%llu]\n", _context->thread_id, _num_kv, _key, _value, _req);
 
     hikv::HiKV* _hikv = _context->hikv;
     bool _res = _hikv->Put(_context->thread_id, _skey, kKeySize, _svalue, kValueSize);
