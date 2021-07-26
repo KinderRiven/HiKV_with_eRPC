@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:10:15
+ * @LastEditTime: 2021-07-26 12:10:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -23,10 +23,10 @@ void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 
 void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 {
-    printf("HandleInsertRequest\n");
+    ServerContext* _context = (ServerContext*)context;
+    printf("HandleInsertRequest [%d]\n", _context->thread_id);
     auto _req = req_handle->get_req_msgbuf();
 
-    ServerContext* _context = (ServerContext*)context;
     // req_handle->dyn_resp_msgbuf = _context->rpc->alloc_msg_buffer_or_die(kMsgSize);
     // _context->rpc->resize_msg_buffer(&req_handle->dyn_resp_msgbuf, kMsgSize);
     // strcpy((char*)req_handle->dyn_resp_msgbuf.buf, "hello");
@@ -82,7 +82,7 @@ int main()
     std::thread _thread[128];
     std::string _server_uri = kServerHostname + ":" + std::to_string(kUDPPort);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    erpc::Nexus *_nexus = new erpc::Nexus(_server_uri, 0, 0);
+    erpc::Nexus* _nexus = new erpc::Nexus(_server_uri, 0, 0);
     _nexus->register_req_func(kInsertType, req_insert_handle);
     _nexus->register_req_func(kSearchType, req_search_handle);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
