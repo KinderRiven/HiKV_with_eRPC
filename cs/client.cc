@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 13:34:23
+ * @LastEditTime: 2021-07-26 13:34:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -70,5 +70,4 @@ int main()
     for (int i = 0; i < kNumClientThread; i++) {
         _thread[i].join();
     }
-    delete rpc;
 }
