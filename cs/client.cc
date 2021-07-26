@@ -1,54 +1,64 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 17:57:36
+ * @LastEditTime: 2021-07-26 18:47:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
  */
 #include "common.h"
 
+struct RequestContext {
+public:
+    int type;
+    int complete;
+    size_t start_time;
+    size_t end_time;
+};
+
+struct ResultContext {
+public:
+    uint64_t num_insert_ok;
+    uint64_t num_insert_error;
+    uint64_t num_search_ok;
+    uint64_t num_search_error;
+};
+
 struct ClientContext {
 public:
     int thread_id;
+    uint64_t base;
+    uint64_t num_kv;
+
     std::string client_uri;
     std::string server_uri;
+
     erpc::Nexus* nexus;
     erpc::Rpc<erpc::CTransport>* rpc;
     erpc::MsgBuffer req;
     erpc::MsgBuffer resp;
 
-public:
-    int complete;
-    uint64_t base;
-    uint64_t num_kv;
-
-public:
-    int type;
-    uint64_t insert_ok;
-    uint64_t insert_error;
-    uint64_t search_ok;
-    uint64_t search_error;
+    RequestContext request;
+    ResultContext result;
 
 public:
     ClientContext()
-        : insert_ok(0)
-        , insert_error(0)
-        , search_ok(0)
-        , search_error(0)
-        , rpc(nullptr)
+        : rpc(nullptr)
     {
+        memset(&result, 0, sizeof(result));
+        memset(&request, 0, sizeof(request));
     }
 };
+
+void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 
 void kv_cont_func(void* context, void* tag)
 {
     ClientContext* _context = (ClientContext*)context;
-    _context->complete = 1;
-    _context->insert_ok++;
+    _context->request.end_time = erpc::rdtsc();
+    _context->request.complete = 1;
+    _context->result.num_insert_ok++;
 }
-
-void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 
 static void run_client_thread(ClientContext* context)
 {
@@ -68,22 +78,28 @@ static void run_client_thread(ClientContext* context)
     context->resp = _rpc->alloc_msg_buffer_or_die(kMsgSize);
 
     uint64_t _base = context->base;
+    size_t _start_time = erpc::rdtsc();
     for (uint64_t i = 1; i <= context->num_kv; i++) {
-        context->complete = 0;
+        context->request.complete = 0;
+        // +++++++++++++++++++++++++++++++++++++++
         char* __dest = (char*)context->req.buf;
         *(uint64_t*)__dest = 1;
         __dest += kHeadSize;
         *(uint64_t*)__dest = _base;
         __dest += kKeySize;
         *(uint64_t*)__dest = _base;
-        // printf("[%d][%llu]\n", _thread_id, _base);
+        context->request.start_time = erpc::rdtsc();
+        // +++++++++++++++++++++++++++++++++++++++
         _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
-        while (!context->complete) {
+        while (!context->request.complete) {
             _rpc->run_event_loop_once();
         }
         _base++;
+        // +++++++++++++++++++++++++++++++++++++++
     }
-    printf("[%d][%llu]\n", _thread_id, context->insert_ok);
+    size_t _end_time = erpc::rdtsc();
+    double _lat = erpc::to_usec(_end_time - _start_time, _rpc->get_freq_ghz());
+    printf("[%d][%llu][time:%.2fseconds][iops:%.2f]\n", _thread_id, context->insert_ok, _lat, 1000000.0 / _lat);
 }
 
 int main()
