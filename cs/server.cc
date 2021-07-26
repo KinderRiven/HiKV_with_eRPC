@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 12:10:46
+ * @LastEditTime: 2021-07-26 14:14:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -24,7 +24,6 @@ void sm_handler(int, erpc::SmEventType, erpc::SmErrType, void*) { }
 void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 {
     ServerContext* _context = (ServerContext*)context;
-    printf("HandleInsertRequest [%d]\n", _context->thread_id);
     auto _req = req_handle->get_req_msgbuf();
 
     // req_handle->dyn_resp_msgbuf = _context->rpc->alloc_msg_buffer_or_die(kMsgSize);
@@ -33,8 +32,12 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     // _context->rpc->enqueue_response(req_handle, &req_handle->dyn_resp_msgbuf);
 
     char* _buf = (char*)_req->buf;
-    uint32_t _num_kv = *(uint32_t*)_buf;
-    printf("%d\n", _num_kv);
+    uint64_t _num_kv = *(uint64_t*)_buf;
+    _buf += 8;
+    uint64_t _key = *(uint64_t*)_buf;
+    _buf += 16;
+    uint64_t _value = *(uint64_t*)_buf;
+    printf("[insert][%d][%d][%llu-%llu]\n", _context->thread_id, _num_kv, _key, _value);
 
     // Respnse
     auto& resp = req_handle->pre_resp_msgbuf;

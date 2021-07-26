@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 13:39:31
+ * @LastEditTime: 2021-07-26 14:11:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -13,14 +13,17 @@ public:
     int thread_id;
     std::string client_uri;
     std::string server_uri;
-
     erpc::Nexus* nexus;
     erpc::Rpc<erpc::CTransport>* rpc;
     erpc::MsgBuffer req;
     erpc::MsgBuffer resp;
+
+public:
+    uint64_t base;
+    uint64_t num_kv;
 };
 
-void cont_func(void* context, void* tag)
+void kv_cont_func(void* context, void* tag)
 {
     printf("cont_func.\n");
 }
@@ -41,9 +44,18 @@ static void run_client_thread(ClientContext* context)
         _rpc->run_event_loop_once();
     }
     printf("[%d][Connect Finished]\n", _thread_id);
+    context->req = _rpc->alloc_msg_buffer_or_die(8 + kKeySize + kValueSize);
+    context->resp = _rpc->alloc_msg_buffer_or_die(8 + kKeySize + kValueSize);
 
-    context->req = _rpc->alloc_msg_buffer_or_die(kMsgSize);
-    context->resp = _rpc->alloc_msg_buffer_or_die(kMsgSize);
+    for (uint64_t i = 1; i <= context->num_kv; i++) {
+        char* __dest = context->req.buf;
+        *(uint64_t*)__dest = 1;
+        __dest += 8;
+        *(uint64_t*)__dest = i;
+        __dest += kKeySize;
+        *(uint64_t*)__dest = i;
+        _rpc->enqueue_request(_session_num, kInsertType, &context->req, &context->resp, kv_cont_func, nullptr);
+    }
     _rpc->run_event_loop(1000000);
 }
 
@@ -63,6 +75,8 @@ int main()
         __context->nexus = _nexus;
         __context->client_uri = _client_uri;
         __context->server_uri = _server_uri;
+        __context->base = i * (kNumOpt / kNumClientThread);
+        __context->num_kv = (kNumOpt / kNumClientThread);
         _thread[i] = std::thread(run_client_thread, __context);
     }
     for (int i = 0; i < kNumClientThread; i++) {
