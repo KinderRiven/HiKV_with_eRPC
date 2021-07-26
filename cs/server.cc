@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 11:02:35
+ * @LastEditTime: 2021-07-26 11:10:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -33,7 +33,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     // strcpy((char*)req_handle->dyn_resp_msgbuf.buf, "hello");
     // _context->rpc->enqueue_response(req_handle, &req_handle->dyn_resp_msgbuf);
 
-    char* _buf = (char*)_req.buf;
+    char* _buf = (char*)_req->buf;
     uint32_t _num_kv = *(uint32_t*)_buf;
     printf("%d\n", _num_kv);
 
