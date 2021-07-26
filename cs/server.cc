@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:14:06
+ * @LastEditTime: 2021-07-26 14:17:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -33,9 +33,9 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 
     char* _buf = (char*)_req->buf;
     uint64_t _num_kv = *(uint64_t*)_buf;
-    _buf += 8;
+    _buf += kHeadSize;
     uint64_t _key = *(uint64_t*)_buf;
-    _buf += 16;
+    _buf += kKeySize;
     uint64_t _value = *(uint64_t*)_buf;
     printf("[insert][%d][%d][%llu-%llu]\n", _context->thread_id, _num_kv, _key, _value);
 

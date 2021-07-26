@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:16:14
+ * @LastEditTime: 2021-07-26 14:17:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -50,7 +50,7 @@ static void run_client_thread(ClientContext* context)
     for (uint64_t i = 1; i <= context->num_kv; i++) {
         char* __dest = (char*)context->req.buf;
         *(uint64_t*)__dest = 1;
-        __dest += 8;
+        __dest += kHeadSize;
         *(uint64_t*)__dest = i;
         __dest += kKeySize;
         *(uint64_t*)__dest = i;
