@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 11:43:16
+ * @LastEditTime: 2021-07-27 12:34:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -140,7 +140,7 @@ static void run_client_thread(ClientContext* context)
         context->request.complete = 0;
         // +++++++++++++++++++++++++++++++++++++++
         char* __dest = (char*)context->request.req.buf;
-        *(uint64_t*)__dest = 1;
+        *(uint64_t*)__dest = kNumBatch;
         __dest += kHeadSize;
         for (int j = 0; j < kNumBatch; j++) {
             *(uint64_t*)__dest = _base;

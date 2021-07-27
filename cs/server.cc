@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 11:43:46
+ * @LastEditTime: 2021-07-27 12:34:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -25,17 +25,14 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 {
     ServerContext* _context = (ServerContext*)context;
     auto _req = req_handle->get_req_msgbuf();
-
     char* _buf = (char*)_req->buf;
     uint64_t _num_batch = *(uint64_t*)_buf;
     _buf += kHeadSize;
     assert(_num_batch == kNumBatch);
 
     for (int i = 0; i < _num_batch; i++) {
-        // uint64_t _key = *(uint64_t*)_buf;
         char* _skey = (char*)_buf;
         _buf += kKeySize;
-        // uint64_t _value = *(uint64_t*)_buf;
         char* _svalue = (char*)_buf;
         _buf += kValueSize;
         hikv::HiKV* _hikv = _context->hikv;
@@ -51,6 +48,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
 
 void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
+    uint64_t _num_kv = 0;
     ServerContext* _context = (ServerContext*)context;
     hikv::HiKV* _hikv = _context->hikv;
 
@@ -58,12 +56,12 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
     char* _buf = (char*)_req->buf;
     uint64_t _num_batch = *(uint64_t*)_buf;
     _buf += kHeadSize;
+    assert(_num_batch == kNumBatch);
 
     auto& resp = req_handle->pre_resp_msgbuf;
     _context->rpc->resize_msg_buffer(&resp, kMsgSize * _num_batch);
     char* _resp_buf = (char*)resp.buf;
     char* _resp_header = _resp_buf;
-    uint64_t _num_kv = 0;
     _resp_buf += kHeadSize;
 
     for (int i = 0; i < _num_batch; i++) {
