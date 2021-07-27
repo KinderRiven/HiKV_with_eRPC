@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 11:30:45
+ * @LastEditTime: 2021-07-27 11:35:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -59,8 +59,8 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
     uint64_t _num_batch = *(uint64_t*)_buf;
     _buf += kHeadSize;
 
-    _context->rpc->resize_msg_buffer(&resp, kMsgSize * _num_batch);
     auto& resp = req_handle->pre_resp_msgbuf;
+    _context->rpc->resize_msg_buffer(&resp, kMsgSize * _num_batch);
     char* _resp_buf = (char*)resp.buf;
     char* _resp_header = _resp_buf;
     uint64_t _num_kv = 0;
@@ -83,7 +83,6 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
     }
     *(uint64_t*)_resp_header = _num_kv;
     _context->rpc->enqueue_response(req_handle, &resp);
-    delete _hikv_value;
 }
 
 static void run_server_thread(ServerContext* context)
