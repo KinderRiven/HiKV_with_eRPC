@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 12:51:01
+ * @LastEditTime: 2021-07-27 15:16:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -105,7 +105,6 @@ static void run_client_thread(ClientContext* context)
 #endif
 
     erpc::Nexus* _nexus = context->nexus;
-
     context->rpc = new erpc::Rpc<erpc::CTransport>(_nexus, (void*)context, _thread_id, sm_handler);
     erpc::Rpc<erpc::CTransport>* _rpc = context->rpc;
     int _session_num = _rpc->create_session(context->server_uri, _thread_id % kNumServerThread);
