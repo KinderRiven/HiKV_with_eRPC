@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 12:39:45
+ * @LastEditTime: 2021-07-27 12:48:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -27,6 +27,10 @@ public:
     uint64_t num_insert_error;
     uint64_t num_search_ok;
     uint64_t num_search_error;
+
+public:
+    double insert_iops;
+    double search_iops;
 };
 
 struct ClientContext {
@@ -131,6 +135,7 @@ static void run_client_thread(ClientContext* context)
     printf("[insert][%d][%llu][time:%.2fseconds][iops:%.2f]\n",
         _thread_id, context->result.num_insert_ok,
         _lat / 1000000.0, 1.0 * context->result.num_insert_ok / (_lat / 1000000.0));
+    context->result.insert_iops = 1.0 * context->result.num_insert_ok / (_lat / 1000000.0);
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     _rpc->resize_msg_buffer(&context->request.req, (kHeadSize + kKeySize) * kNumBatch);
@@ -162,11 +167,13 @@ static void run_client_thread(ClientContext* context)
     printf("[search][%d][%llu/%llu][time:%.2fseconds][iops:%.2f]\n",
         _thread_id, context->result.num_search_ok, context->result.num_search_error,
         _lat / 1000000.0, 1.0 * context->result.num_search_ok / (_lat / 1000000.0));
+    context->result.search_iops = 1.0 * context->result.num_search_ok / (_lat / 1000000.0);
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 int main()
 {
+    ClientContext* _context[64];
     std::string _client_uri = kClientHostname + ":" + std::to_string(kUDPPort);
     erpc::Nexus* _nexus = new erpc::Nexus(_client_uri, 0, 0);
     printf("ClientHostName:%s\n", _client_uri.c_str());
@@ -177,6 +184,7 @@ int main()
 
     for (int i = 0; i < kNumClientThread; i++) {
         ClientContext* __context = new ClientContext();
+        _context[i] = __context;
         __context->thread_id = i;
         __context->nexus = _nexus;
         __context->client_uri = _client_uri;
@@ -185,7 +193,14 @@ int main()
         __context->num_kv = (kNumOpt / kNumClientThread);
         _thread[i] = std::thread(run_client_thread, __context);
     }
+
+    double _sum_insert_iops = 0;
+    double _sum_search_iops = 0;
     for (int i = 0; i < kNumClientThread; i++) {
+        _sum_insert_iops += _context[i]->result.insert_iops;
+        _sum_search_iops += _context[i]->result.search_iops;
         _thread[i].join();
     }
+    printf("[NumThread:%d][Insert:%.2f][Search:%.2f]\n", kNumClientThread, _sum_insert_iops, _sum_search_iops);
+    return 0;
 }
