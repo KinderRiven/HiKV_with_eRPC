@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 19:36:04
+ * @LastEditTime: 2021-07-27 11:32:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -66,13 +66,16 @@ void kv_cont_func(void* context, void* tag)
         char* _buf = (char*)_context->request.resp.buf;
         uint64_t _num_kv = *(uint64_t*)_buf;
         _buf += kHeadSize;
-        uint64_t _key = *(uint64_t*)_buf;
-        _buf += kKeySize;
-        uint64_t _value = *(uint64_t*)_buf;
-        if (_key == _value) {
-            _context->result.num_search_ok++;
-        } else {
-            _context->result.num_search_error++;
+        for (int i = 0; i < _num_kv; i++) {
+            uint64_t _key = *(uint64_t*)_buf;
+            _buf += kKeySize;
+            uint64_t _value = *(uint64_t*)_buf;
+            _buf += kValueSize;
+            if (_key == _value) {
+                _context->result.num_search_ok++;
+            } else {
+                _context->result.num_search_error++;
+            }
         }
         _context->request.complete = 1;
     }
@@ -92,29 +95,32 @@ static void run_client_thread(ClientContext* context)
         _rpc->run_event_loop_once();
     }
     printf("[%d][Connect Finished]\n", _thread_id);
-    context->request.req = _rpc->alloc_msg_buffer_or_die(kMsgSize);
-    context->request.resp = _rpc->alloc_msg_buffer_or_die(kMsgSize);
+    context->request.req = _rpc->alloc_msg_buffer_or_die(kMsgSize * kNumBatch);
+    context->request.resp = _rpc->alloc_msg_buffer_or_die(kMsgSize * kNumBatch);
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     uint64_t _base = context->base;
     size_t _start_time = erpc::rdtsc();
-    for (uint64_t i = 1; i <= context->num_kv; i++) {
+    for (uint64_t i = 1; i <= context->num_kv; i += kNumBatch) {
         context->request.type = REQ_INSERT;
         context->request.complete = 0;
         // +++++++++++++++++++++++++++++++++++++++
         char* __dest = (char*)context->request.req.buf;
-        *(uint64_t*)__dest = 1;
+        *(uint64_t*)__dest = kNumBatch;
         __dest += kHeadSize;
-        *(uint64_t*)__dest = _base;
-        __dest += kKeySize;
-        *(uint64_t*)__dest = _base;
-        context->request.start_time = erpc::rdtsc();
+        for (int j = 0; j < kNumBatch; j++) {
+            *(uint64_t*)__dest = _base;
+            __dest += kKeySize;
+            *(uint64_t*)__dest = _base;
+            __dest += kValueSize;
+            _base++;
+        }
         // +++++++++++++++++++++++++++++++++++++++
+        context->request.start_time = erpc::rdtsc();
         _rpc->enqueue_request(_session_num, kInsertType, &context->request.req, &context->request.resp, kv_cont_func, nullptr);
         while (!context->request.complete) {
             _rpc->run_event_loop_once();
         }
-        _base++;
         // +++++++++++++++++++++++++++++++++++++++
     }
     size_t _end_time = erpc::rdtsc();
@@ -124,27 +130,28 @@ static void run_client_thread(ClientContext* context)
         _lat / 1000000.0, 1.0 * context->result.num_insert_ok / (_lat / 1000000.0));
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    _rpc->resize_msg_buffer(&context->request.req, kHeadSize + kKeySize);
+    _rpc->resize_msg_buffer(&context->request.req, (kHeadSize + kKeySize) * kNumBatch);
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     _base = context->base;
     _start_time = erpc::rdtsc();
-    for (uint64_t i = 1; i <= context->num_kv; i++) {
+    for (uint64_t i = 1; i <= context->num_kv; i += kNumBatch) {
         context->request.type = REQ_SEARCH;
         context->request.complete = 0;
         // +++++++++++++++++++++++++++++++++++++++
         char* __dest = (char*)context->request.req.buf;
         *(uint64_t*)__dest = 1;
         __dest += kHeadSize;
-        *(uint64_t*)__dest = _base;
-        __dest += kKeySize;
-        *(uint64_t*)__dest = _base;
-        context->request.start_time = erpc::rdtsc();
+        for (int j = 0; j < kNumBatch; j++) {
+            *(uint64_t*)__dest = _base;
+            __dest += kKeySize;
+            _base++;
+        }
         // +++++++++++++++++++++++++++++++++++++++
+        context->request.start_time = erpc::rdtsc();
         _rpc->enqueue_request(_session_num, kSearchType, &context->request.req, &context->request.resp, kv_cont_func, nullptr);
         while (!context->request.complete) {
             _rpc->run_event_loop_once();
         }
-        _base++;
         // +++++++++++++++++++++++++++++++++++++++
     }
     _end_time = erpc::rdtsc();

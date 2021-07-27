@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 19:38:20
+ * @LastEditTime: 2021-07-27 11:30:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -27,27 +27,25 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     auto _req = req_handle->get_req_msgbuf();
 
     char* _buf = (char*)_req->buf;
-    uint64_t _num_kv = *(uint64_t*)_buf;
+    uint64_t _num_batch = *(uint64_t*)_buf;
     _buf += kHeadSize;
+    assert(_num_batch == kNumBatch);
 
-    uint64_t _key = *(uint64_t*)_buf;
-    char* _skey = (char*)_buf;
-
-    _buf += kKeySize;
-    uint64_t _value = *(uint64_t*)_buf;
-    char* _svalue = (char*)_buf;
-
-    hikv::HiKV* _hikv = _context->hikv;
-    bool _res = _hikv->Put(_context->thread_id, _skey, kKeySize, _svalue, kValueSize);
+    for (int i = 0; i < _num_batch; i++) {
+        // uint64_t _key = *(uint64_t*)_buf;
+        char* _skey = (char*)_buf;
+        _buf += kKeySize;
+        // uint64_t _value = *(uint64_t*)_buf;
+        char* _svalue = (char*)_buf;
+        _buf += kValueSize;
+        hikv::HiKV* _hikv = _context->hikv;
+        bool _res = _hikv->Put(_context->thread_id, _skey, kKeySize, _svalue, kValueSize);
+    }
 
     // Respnse
     auto& resp = req_handle->pre_resp_msgbuf;
     _context->rpc->resize_msg_buffer(&resp, 8);
-    if (_res) {
-        *(uint64_t*)resp.buf = 1;
-    } else {
-        *(uint64_t*)resp.buf = 2;
-    }
+    *(uint64_t*)resp.buf = 1;
     _context->rpc->enqueue_response(req_handle, &resp);
 }
 
@@ -55,29 +53,35 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
 {
     ServerContext* _context = (ServerContext*)context;
     hikv::HiKV* _hikv = _context->hikv;
-    // ++++++++++++++++++++++++++++++++++++++
+
     auto _req = req_handle->get_req_msgbuf();
     char* _buf = (char*)_req->buf;
-    uint64_t _num_kv = *(uint64_t*)_buf;
+    uint64_t _num_batch = *(uint64_t*)_buf;
     _buf += kHeadSize;
-    uint64_t _key = *(uint64_t*)_buf;
-    char* _skey = (char*)_buf;
-    // ++++++++++++++++++++++++++++++++++++++
-    auto& resp = req_handle->pre_resp_msgbuf;
-    _context->rpc->resize_msg_buffer(&resp, kHeadSize + kKeySize + kValueSize);
-    // ++++++++++++++++++++++++++++++++++++++
-    char* _resp_buf = (char*)resp.buf;
-    *(uint64_t*)_resp_buf = 1;
-    _resp_buf += kHeadSize;
-    *(uint64_t*)_resp_buf = _key;
-    _resp_buf += kKeySize;
 
-    char* _hikv_value = nullptr;
-    size_t _hikv_value_length;
-    bool _res = _hikv->Get(_context->thread_id, _skey, kKeySize, &_hikv_value, _hikv_value_length);
-    if (_hikv_value != nullptr) {
-        memcpy(_resp_buf, _hikv_value, _hikv_value_length);
+    _context->rpc->resize_msg_buffer(&resp, kMsgSize * _num_batch);
+    auto& resp = req_handle->pre_resp_msgbuf;
+    char* _resp_buf = (char*)resp.buf;
+    char* _resp_header = _resp_buf;
+    uint64_t _num_kv = 0;
+    _resp_buf += kHeadSize;
+
+    for (int i = 0; i < _num_batch; i++) {
+        char* _skey = (char*)_buf;
+        _buf += kKeySize;
+        char* _hikv_value = nullptr;
+        size_t _hikv_value_length;
+        bool _res = _hikv->Get(_context->thread_id, _skey, kKeySize, &_hikv_value, _hikv_value_length);
+        if (_res) {
+            memcpy(_resp_buf, _skey, kKeySize);
+            _resp_buf += kKeySize;
+            memcpy(_resp_buf, _hikv_value, _hikv_value_length);
+            _resp_buf += kValueSize;
+            delete _hikv_value;
+            _num_kv++;
+        }
     }
+    *(uint64_t*)_resp_header = _num_kv;
     _context->rpc->enqueue_response(req_handle, &resp);
     delete _hikv_value;
 }

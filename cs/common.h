@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-26 14:17:12
+ * @LastEditTime: 2021-07-27 10:55:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/cs/common.h
@@ -26,6 +26,7 @@ static const uint32_t kNumClientThread = 4;
 
 static const uint64_t kNumOpt = 10000;
 
+static const uint32_t kNumBatch = 10;
 static const uint32_t kHeadSize = 8;
 static const uint32_t kKeySize = 16;
 static const uint32_t kValueSize = 64;
