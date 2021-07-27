@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 12:34:31
+ * @LastEditTime: 2021-07-27 12:37:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -158,8 +158,8 @@ static void run_client_thread(ClientContext* context)
     _end_time = erpc::rdtsc();
     _lat = erpc::to_usec(_end_time - _start_time, _rpc->get_freq_ghz());
     printf("[search][%d][%llu/%llu][time:%.2fseconds][iops:%.2f]\n",
-        _thread_id, context->result.num_insert_ok, context->result.num_insert_error,
-        _lat / 1000000.0, 1.0 * context->result.num_insert_ok / (_lat / 1000000.0));
+        _thread_id, context->result.num_search_ok, context->result.num_search_error,
+        _lat / 1000000.0, 1.0 * context->result.num_search_ok / (_lat / 1000000.0));
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
