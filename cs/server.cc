@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 12:35:04
+ * @LastEditTime: 2021-07-27 12:39:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -42,7 +42,7 @@ void req_insert_handle(erpc::ReqHandle* req_handle, void* context)
     // Respnse
     auto& resp = req_handle->pre_resp_msgbuf;
     _context->rpc->resize_msg_buffer(&resp, 8);
-    *(uint64_t*)resp.buf = 1;
+    *(uint64_t*)resp.buf = _num_batch;
     _context->rpc->enqueue_response(req_handle, &resp);
 }
 
