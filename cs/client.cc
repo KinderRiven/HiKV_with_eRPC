@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 11:32:29
+ * @LastEditTime: 2021-07-27 11:33:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /HiKV+++/benchmark/cs/client.cc
@@ -65,6 +65,7 @@ void kv_cont_func(void* context, void* tag)
     } else if (_context->request.type == REQ_SEARCH) {
         char* _buf = (char*)_context->request.resp.buf;
         uint64_t _num_kv = *(uint64_t*)_buf;
+        printf("[%llu]\n", _num_kv);
         _buf += kHeadSize;
         for (int i = 0; i < _num_kv; i++) {
             uint64_t _key = *(uint64_t*)_buf;
