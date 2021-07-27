@@ -98,7 +98,7 @@ static void run_client_thread(ClientContext* context)
 #if 1
     cpu_set_t _mask;
     CPU_ZERO(&_mask);
-    CPU_SET(g_numa[thread_id], &_mask);
+    CPU_SET(g_numa[_thread_id], &_mask);
     if (pthread_setaffinity_np(pthread_self(), sizeof(_mask), &_mask) < 0) {
         printf("threadpool, set thread affinity failed.\n");
     }

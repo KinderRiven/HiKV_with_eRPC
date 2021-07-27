@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 12:50:04
+ * @LastEditTime: 2021-07-27 12:51:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -92,7 +92,7 @@ static void run_server_thread(ServerContext* context)
 #if 1
     cpu_set_t _mask;
     CPU_ZERO(&_mask);
-    CPU_SET(g_numa[thread_id], &_mask);
+    CPU_SET(g_numa[_thread_id], &_mask);
     if (pthread_setaffinity_np(pthread_self(), sizeof(_mask), &_mask) < 0) {
         printf("threadpool, set thread affinity failed.\n");
     }
