@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-04-08 10:36:18
- * @LastEditTime: 2021-07-27 11:35:39
+ * @LastEditTime: 2021-07-27 11:43:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /code/eRPC/hello_world/server.cc
@@ -82,6 +82,7 @@ void req_search_handle(erpc::ReqHandle* req_handle, void* context)
         }
     }
     *(uint64_t*)_resp_header = _num_kv;
+    printf("%llu - %llu\n", _num_kv, _num_batch);
     _context->rpc->enqueue_response(req_handle, &resp);
 }
 
